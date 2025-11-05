@@ -2,9 +2,7 @@
 # H.I.J. Jeugdorkest Content Management
 
 backend:
-  name: github
-  repo: MCBoender/HIJ-website
-  branch: main
+  name: test-repo
 
 site_url: https://hij-jeugdorkest.netlify.app
 display_url: https://hij-jeugdorkest.netlify.app
