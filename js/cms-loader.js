@@ -7,86 +7,71 @@ class CMSDataLoader {
         this.isLoaded = false;
     }
 
-    // Simple and robust YAML parser
+    // Super simple YAML parser - extract homepage_subtitle specifically
     parseYAML(yamlText) {
         const result = {};
         const lines = yamlText.split('\n');
-        let i = 0;
-
-        while (i < lines.length) {
+        
+        // First, let's just extract the homepage_subtitle specifically
+        let foundHomepageSubtitle = false;
+        let subtitleLines = [];
+        
+        for (let i = 0; i < lines.length; i++) {
             const line = lines[i].trim();
             
-            // Skip empty lines and comments
-            if (!line || line.startsWith('#')) {
-                i++;
+            // Check if this is homepage_subtitle
+            if (line === 'homepage_subtitle:') {
+                foundHomepageSubtitle = true;
                 continue;
             }
-
-            // Handle array items
-            if (line.startsWith('- ')) {
-                const item = line.substring(2).trim();
-                // For arrays, we'll add them to a generic array key or skip for now
-                if (item.includes(':')) {
-                    const [key, ...valueParts] = item.split(':');
-                    result[key.trim()] = valueParts.join(':').trim().replace(/^"|"$/g, '');
+            
+            // If we found homepage_subtitle, collect subsequent non-empty, non-comment lines
+            if (foundHomepageSubtitle) {
+                // Stop if we hit a new key (contains : and not indented)
+                if (line && line.includes(':') && !line.startsWith('-')) {
+                    // This is the start of a new key-value pair, we're done
+                    break;
                 }
-                i++;
+                
+                // Add non-empty, non-comment lines
+                if (line && !line.startsWith('#')) {
+                    subtitleLines.push(line);
+                }
+            }
+        }
+        
+        // Join all subtitle lines together
+        if (subtitleLines.length > 0) {
+            result.homepage_subtitle = subtitleLines.join(' ');
+        }
+        
+        // Now extract other simple key-value pairs
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            
+            // Skip empty lines and comments
+            if (!line.trim() || line.trim().startsWith('#')) {
                 continue;
             }
-
-            // Handle key-value pairs
+            
+            // Look for simple key: value pattern (not multi-line)
             if (line.includes(':')) {
                 const colonIndex = line.indexOf(':');
                 const key = line.substring(0, colonIndex).trim();
                 let value = line.substring(colonIndex + 1).trim();
-
-                // Check for multi-line value
-                if (value === '' || value === '>' || value === '|') {
-                    // Multi-line value follows
-                    i++;
-                    let multiLineValue = [];
-                    
-                    while (i < lines.length) {
-                        const nextLine = lines[i];
-                        const trimmed = nextLine.trim();
-                        
-                        // Stop if line is empty or a new key-value pair
-                        if (!trimmed) {
-                            i++;
-                            continue;
-                        }
-                        
-                        // Check if we've reached a new top-level key
-                        if (trimmed.includes(':') && !trimmed.startsWith('- ') && !nextLine.startsWith('  ') && !nextLine.startsWith('\t')) {
-                            // This is a new key-value pair, back up one
-                            i--;
-                            break;
-                        }
-                        
-                        // Skip comment lines
-                        if (trimmed.startsWith('#')) {
-                            i++;
-                            continue;
-                        }
-                        
-                        // Add content (remove leading whitespace for multi-line)
-                        const content = trimmed;
-                        if (content) {
-                            multiLineValue.push(content);
-                        }
-                        i++;
-                    }
-                    
-                    result[key] = multiLineValue.join(' ');
-                } else {
-                    // Single-line value
+                
+                // Skip homepage_subtitle as we handled it above
+                if (key === 'homepage_subtitle') {
+                    continue;
+                }
+                
+                // Handle single-line values only
+                if (value !== '' && value !== '>' && value !== '|') {
                     result[key] = value.replace(/^"|"$/g, '');
                 }
             }
-            
-            i++;
         }
-
+        
         return result;
     }
 
