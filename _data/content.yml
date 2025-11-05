@@ -1,34 +1,27 @@
-# Website Content
-# Beheer hier de algemene content van je website
+homepage_title: SPEEL MEE BIJ HET H.I.J.!
+homepage_subtitle: Het gezelligste jeugdorkest van Voorburg en heel ver
+  daarbuiten! Muziek maken, nieuwe vrienden maken en optreden op de meest
+  verrassende plekken.
+cta_text: Lid Worden
+about_title: Over Ons
+about_text: >
+  Wij zijn meer dan alleen een orkest! Bij het H.I.J. staat gezelligheid voorop.
+  We repeteren in een ontspannen sfeer waar iedereen welkom is, ongeacht je
+  niveau.
 
-# Homepage Content
-homepage_title: "SPEEL MEE BIJ HET H.I.J.!"
-homepage_subtitle: "Het gezelligste jeugdorkest van Voorburg en ver daarbuiten! Muziek maken, nieuwe vrienden maken en optreden op de meest verrassende plekken."
-cta_text: "Lid Worden"
 
-# About Section
-about_title: "Over Ons"
-about_text: |
-  Wij zijn meer dan alleen een orkest! Bij het H.I.J. staat gezelligheid voorop. We repeteren in een ontspannen sfeer waar iedereen welkom is, ongeacht je niveau.
-  
   Ons orkest bestaat uit ~15 enthousiaste kinderen en jongeren tussen de 8 en 22 jaar. We hebben violen, cello's, contrabas, trompet en keyboard, maar we zijn altijd op zoek naar meer brass instrumenten, percussie en extra contrabassisten.
-  
+
+
   Onze Dirigent Jurgen van Groningen Schinkel leidt ons met passie en creativiteit. Hij componeert speciaal voor ons unieke stukken en zorgt ervoor dat elke repetitie een avontuur is.
-
-# Contact Information
-contact_email: "info@hijjeugdorkest.nl"
-phone: "070-XXX XXXX"  # Update as needed
-address: "Forum Hadriani, Oosteinde 16, Voorburg"
-
-# Social Media
-instagram_handle: "hijjeugdorkest"
-facebook_url: ""  # Add if you have a Facebook page
-youtube_url: ""   # Add if you have a YouTube channel
-
-# Additional Content
-welcome_message: "Welkom op onze website! Hier vind je alle informatie over ons jeugdorkest."
-join_title: "Lid Worden"
-join_text: "Geef je op voor twee gratis proeflessen en ervaar zelf hoe gezellig het bij het H.I.J. is!"
-
-# FAQ Questions (will be managed separately)
-faq_intro: "Hier vind je antwoorden op veelgestelde vragen over ons orkest."
+contact_email: info@hijjeugdorkest.nl
+phone: 070-XXX XXXX
+address: Forum Hadriani, Oosteinde 16, Voorburg
+instagram_handle: hijjeugdorkest
+facebook_url: https://www.facebook.com/HIJjeugdorkest/
+youtube_url: https://www.youtube.com/
+welcome_message: Welkom op onze website! Hier vind je alle informatie over ons jeugdorkest.
+join_title: Lid Worden
+join_text: Geef je op voor twee gratis proeflessen en ervaar zelf hoe gezellig
+  het bij het H.I.J. is!
+faq_intro: Hier vind je antwoorden op veelgestelde vragen over ons orkest.
