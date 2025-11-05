@@ -2,8 +2,10 @@
 # H.I.J. Jeugdorkest Content Management
 
 backend:
-  name: github
-  repo: MCBoender/HIJ-website
+  name: auth0
+  client_id: jRdsqBWKwMR1T9rPV3mhzZtD7CbpTHuE7
+  client_secret: CVGoC2q2bZr9Pp4l9s3DrIk5tAxUmdpZe7_u4wLSqGKJmj1HkTJoBUbewp0iwzL- 
+  domain: mcremsie.eu,auth0.com
   # Example: if your GitHub username is "hij-voorburg" and repo name is "hij-website", use: hij-voorburg/hij-website
   branch: main
 
