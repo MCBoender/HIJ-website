@@ -7,7 +7,7 @@ class CMSDataLoader {
         this.isLoaded = false;
     }
 
-    // Universal YAML parser for all multi-line values
+    // Flexible YAML parser for all values including folded text
     parseYAML(yamlText) {
         const result = {};
         const lines = yamlText.split('\n');
@@ -26,9 +26,9 @@ class CMSDataLoader {
                 const key = line.substring(0, colonIndex).trim();
                 let value = line.substring(colonIndex + 1).trim();
                 
-                // Check if this is a multi-line value (empty after colon or > or |)
+                // Check if this is a multi-line value
                 if (value === '' || value === '>' || value === '|') {
-                    // Multi-line: collect all subsequent lines until next key
+                    // Classic multi-line: collect indented lines
                     const multiLines = [];
                     let j = i + 1;
                     
@@ -36,9 +36,8 @@ class CMSDataLoader {
                         const nextLine = lines[j];
                         const trimmedNext = nextLine.trim();
                         
-                        // Stop if we find a new key (not indented, contains colon)
-                        if (trimmedNext && trimmedNext.includes(':') && !trimmedNext.startsWith('-') && !nextLine.match(/^\s/)) {
-                            // This is a new top-level key
+                        // Stop if we find a new top-level key
+                        if (trimmedNext && trimmedNext.includes(':') && !trimmedNext.startsWith('-') && !nextLine.match(/^\s/) && !nextLine.startsWith('-')) {
                             break;
                         }
                         
@@ -48,7 +47,7 @@ class CMSDataLoader {
                             continue;
                         }
                         
-                        // Add content from this line
+                        // Add content
                         if (trimmedNext) {
                             multiLines.push(trimmedNext);
                         }
@@ -56,12 +55,46 @@ class CMSDataLoader {
                         j++;
                     }
                     
-                    // Join all lines with spaces
                     result[key] = multiLines.join(' ');
-                    i = j - 1; // Skip to before the next key
+                    i = j - 1;
                 } else {
-                    // Single-line value
-                    result[key] = value.replace(/^"|"$/g, '');
+                    // Check if this might be folded text (continuation lines)
+                    const nextLine = i + 1 < lines.length ? lines[i + 1] : '';
+                    
+                    if (nextLine && nextLine.match(/^\s/) && nextLine.trim() && !nextLine.trim().startsWith('#')) {
+                        // This looks like folded text - first line + continuation
+                        const multiLines = [value];
+                        let j = i + 1;
+                        
+                        while (j < lines.length) {
+                            const continuationLine = lines[j];
+                            const trimmed = continuationLine.trim();
+                            
+                            // Stop if we hit a new top-level key
+                            if (trimmed && trimmed.includes(':') && !trimmed.startsWith('-') && !continuationLine.match(/^\s/) && !continuationLine.startsWith('-')) {
+                                break;
+                            }
+                            
+                            // Stop at empty lines
+                            if (!trimmed) {
+                                j++;
+                                continue;
+                            }
+                            
+                            // Add continuation line (just the content)
+                            if (trimmed) {
+                                multiLines.push(trimmed);
+                            }
+                            
+                            j++;
+                        }
+                        
+                        result[key] = multiLines.join(' ');
+                        i = j - 1;
+                    } else {
+                        // Simple single-line value
+                        result[key] = value.replace(/^"|"$/g, '');
+                    }
                 }
             }
         }
