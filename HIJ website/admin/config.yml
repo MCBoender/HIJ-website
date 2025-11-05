@@ -3,7 +3,7 @@
 
 backend:
   name: github
-  repo: YOUR_USERNAME/hij-website  # TODO: Replace with your actual GitHub username and repository name
+  repo: MCBoender/HIJ-website
   # Example: if your GitHub username is "hij-voorburg" and repo name is "hij-website", use: hij-voorburg/hij-website
   branch: main
 
