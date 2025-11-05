@@ -7,69 +7,84 @@ class CMSDataLoader {
         this.isLoaded = false;
     }
 
-    // Improved YAML parser for key-value pairs, arrays, and multi-line text
+    // Simple and robust YAML parser
     parseYAML(yamlText) {
         const result = {};
         const lines = yamlText.split('\n');
-        let currentKey = null;
-        let currentValue = [];
-        let isMultiLine = false;
+        let i = 0;
 
-        for (let i = 0; i < lines.length; i++) {
-            const line = lines[i];
-            const trimmed = line.trim();
-
+        while (i < lines.length) {
+            const line = lines[i].trim();
+            
             // Skip empty lines and comments
-            if (!trimmed || trimmed.startsWith('#')) {
+            if (!line || line.startsWith('#')) {
+                i++;
                 continue;
             }
 
             // Handle array items
-            if (trimmed.startsWith('- ')) {
-                const arrayItem = trimmed.substring(2);
-                if (arrayItem.includes(': ')) {
-                    const [key, ...valueParts] = arrayItem.split(': ');
-                    result[key] = valueParts.join(': ');
-                } else {
-                    result[currentKey] = result[currentKey] || [];
-                    result[currentKey].push(arrayItem);
+            if (line.startsWith('- ')) {
+                const item = line.substring(2).trim();
+                // For arrays, we'll add them to a generic array key or skip for now
+                if (item.includes(':')) {
+                    const [key, ...valueParts] = item.split(':');
+                    result[key.trim()] = valueParts.join(':').trim().replace(/^"|"$/g, '');
                 }
+                i++;
                 continue;
             }
 
             // Handle key-value pairs
-            if (trimmed.includes(':')) {
-                const colonIndex = trimmed.indexOf(':');
-                const key = trimmed.substring(0, colonIndex).trim();
-                let value = trimmed.substring(colonIndex + 1).trim();
+            if (line.includes(':')) {
+                const colonIndex = line.indexOf(':');
+                const key = line.substring(0, colonIndex).trim();
+                let value = line.substring(colonIndex + 1).trim();
 
-                // If multi-line value (indicated by > or | at the end of the line)
+                // Check for multi-line value
                 if (value === '' || value === '>' || value === '|') {
-                    isMultiLine = true;
-                    currentKey = key;
-                    currentValue = [];
-                    continue;
-                }
-
-                // Single-line value
-                result[key] = value;
-                currentKey = null;
-                isMultiLine = false;
-            } else {
-                // This is a continuation of a multi-line value
-                if (isMultiLine && currentKey) {
-                    // Remove leading whitespace and add to current value
-                    const cleanLine = line.replace(/^\s+/, '');
-                    if (cleanLine.trim()) {
-                        currentValue.push(cleanLine);
+                    // Multi-line value follows
+                    i++;
+                    let multiLineValue = [];
+                    
+                    while (i < lines.length) {
+                        const nextLine = lines[i];
+                        const trimmed = nextLine.trim();
+                        
+                        // Stop if line is empty or a new key-value pair
+                        if (!trimmed) {
+                            i++;
+                            continue;
+                        }
+                        
+                        // Check if we've reached a new top-level key
+                        if (trimmed.includes(':') && !trimmed.startsWith('- ') && !nextLine.startsWith('  ') && !nextLine.startsWith('\t')) {
+                            // This is a new key-value pair, back up one
+                            i--;
+                            break;
+                        }
+                        
+                        // Skip comment lines
+                        if (trimmed.startsWith('#')) {
+                            i++;
+                            continue;
+                        }
+                        
+                        // Add content (remove leading whitespace for multi-line)
+                        const content = trimmed;
+                        if (content) {
+                            multiLineValue.push(content);
+                        }
+                        i++;
                     }
+                    
+                    result[key] = multiLineValue.join(' ');
+                } else {
+                    // Single-line value
+                    result[key] = value.replace(/^"|"$/g, '');
                 }
             }
-        }
-
-        // Process collected multi-line values
-        if (currentValue.length > 0 && currentKey) {
-            result[currentKey] = currentValue.join(' ');
+            
+            i++;
         }
 
         return result;
@@ -83,9 +98,11 @@ class CMSDataLoader {
             // Load content data
             const contentResponse = await fetch('./_data/content.yml');
             const contentText = await contentResponse.text();
+            console.log('Raw YAML text:', contentText.substring(0, 200) + '...');
             this.data.content = this.parseYAML(contentText);
             console.log('Content loaded:', this.data.content);
             console.log('Homepage subtitle:', this.data.content.homepage_subtitle);
+            console.log('Subtitle length:', this.data.content.homepage_subtitle ? this.data.content.homepage_subtitle.length : 'undefined');
 
             // Load agenda data
             const agendaResponse = await fetch('./_data/agenda.yml');
