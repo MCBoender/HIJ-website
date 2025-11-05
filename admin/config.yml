@@ -16,73 +16,81 @@ media_folder: "imgs/uploads"
 public_folder: "/imgs/uploads"
 
 collections:
-  # Agenda Events Management
-  - name: "agenda"
-    label: "Agenda"
-    label_singular: "Event"
-    folder: "_data"
-    create: true
-    slug: "{{slug}}"
-    extension: "yml"
-    format: "yml"
-    fields:
-      - {label: "Dag", name: "day", widget: "string"}
-      - {label: "Maand", name: "month", widget: "select", options: ["jan", "feb", "mrt", "apr", "mei", "jun", "jul", "aug", "sep", "okt", "nov", "dec"], default: "jan"}
-      - {label: "Titel", name: "title", widget: "string", hint: "Bijv.: Eerste Repetitie"}
-      - {label: "Tijd", name: "time", widget: "string", hint: "Bijv.: 19:00 - 21:00"}
-      - {label: "Locatie", name: "location", widget: "string", hint: "Bijv.: Muziekschool Voorburg"}
-      - {label: "Beschrijving", name: "description", widget: "text", hint: "Extra informatie over het event"}
-      - {label: "Link", name: "link", widget: "string", required: false, hint: "Link naar meer informatie (optioneel)"}
-
-  # Complete Website Content Management
+  # Website Content (single file)
   - name: "content"
     label: "Website Content"
     label_singular: "Content"
-    folder: "_data"
-    create: false
-    slug: "content"
-    extension: "yml"
-    format: "yml"
-    fields:
-      - {label: "Homepage Titel", name: "homepage_title", widget: "string", default: "H.I.J. Jeugdorkest"}
-      - {label: "Homepage Subtitle", name: "homepage_subtitle", widget: "string", default: "Het gezelligste jeugdorkest van Voorburg en ver daarbuiten!"}
-      - {label: "CTA Tekst", name: "cta_text", widget: "string", default: "SPEEL MEE BIJ H.I.J."}
-      - {label: "Over Titel", name: "about_title", widget: "string", default: "Over H.I.J. Jeugdorkest"}
-      - {label: "Over Ons Tekst", name: "about_text", widget: "markdown", default: "Welkom bij H.I.J. Jeugdorkest! Wij zijn een gezellige groep jonge muzikanten..."}
-      - {label: "Contact Email", name: "contact_email", widget: "string", default: "info@hijjeugdorkest.nl"}
-      - {label: "Telefoon", name: "phone", widget: "string", default: "070-XXX XXXX"}
-      - {label: "Adres", name: "address", widget: "string", default: "Muziekschool Voorburg, Voorburg"}
-      - {label: "Instagram Handle", name: "instagram_handle", widget: "string", default: "hijjeugdorkest"}
-      - {label: "Facebook URL", name: "facebook_url", widget: "string", default: "", hint: "Facebook pagina URL"}
-      - {label: "YouTube URL", name: "youtube_url", widget: "string", default: "", hint: "YouTube kanaal URL"}
-      - {label: "Welkomstbericht", name: "welcome_message", widget: "text", default: "Welkom op onze website! Hier vind je alle informatie over ons jeugdorkest."}
-      - {label: "Lidmaatschap Titel", name: "join_title", widget: "string", default: "Wil je meespelen?"}
-      - {label: "Lidmaatschap Tekst", name: "join_text", widget: "markdown", default: "Ben je geïnteresseerd in het H.I.J. Jeugdorkest? Neem contact met ons op voor meer informatie over repetities en proeflessen."}
-      - {label: "FAQ Intro", name: "faq_intro", widget: "text", default: "Hier vind je antwoorden op veelgestelde vragen over ons orkest."}
+    files:
+      - file: "_data/content.yml"
+        label: "Complete Website Content"
+        name: "content"
+        fields:
+          - {label: "Homepage Titel", name: "homepage_title", widget: "string", default: "H.I.J. Jeugdorkest"}
+          - {label: "Homepage Subtitle", name: "homepage_subtitle", widget: "string", default: "Het gezelligste jeugdorkest van Voorburg en ver daarbuiten!"}
+          - {label: "CTA Tekst", name: "cta_text", widget: "string", default: "SPEEL MEE BIJ H.I.J."}
+          - {label: "Over Titel", name: "about_title", widget: "string", default: "Over H.I.J. Jeugdorkest"}
+          - {label: "Over Ons Tekst", name: "about_text", widget: "markdown", default: "Welkom bij H.I.J. Jeugdorkest! Wij zijn een gezellige groep jonge muzikanten..."}
+          - {label: "Contact Email", name: "contact_email", widget: "string", default: "info@hijjeugdorkest.nl"}
+          - {label: "Telefoon", name: "phone", widget: "string", default: "070-XXX XXXX"}
+          - {label: "Adres", name: "address", widget: "string", default: "Muziekschool Voorburg, Voorburg"}
+          - {label: "Instagram Handle", name: "instagram_handle", widget: "string", default: "hijjeugdorkest"}
+          - {label: "Facebook URL", name: "facebook_url", widget: "string", default: "", hint: "Facebook pagina URL"}
+          - {label: "YouTube URL", name: "youtube_url", widget: "string", default: "", hint: "YouTube kanaal URL"}
+          - {label: "Welkomstbericht", name: "welcome_message", widget: "text", default: "Welkom op onze website! Hier vind je alle informatie over ons jeugdorkest."}
+          - {label: "Lidmaatschap Titel", name: "join_title", widget: "string", default: "Wil je meespelen?"}
+          - {label: "Lidmaatschap Tekst", name: "join_text", widget: "markdown", default: "Ben je geïnteresseerd in het H.I.J. Jeugdorkest? Neem contact met ons op voor meer informatie over repetities en proeflessen."}
+          - {label: "FAQ Intro", name: "faq_intro", widget: "text", default: "Hier vind je antwoorden op veelgestelde vragen over ons orkest."}
 
-  # Gallery Management
+  # Agenda Events Management (Array-based)
+  - name: "agenda"
+    label: "Agenda"
+    label_singular: "Event"
+    files:
+      - file: "_data/agenda.yml"
+        label: "Agenda Events"
+        name: "agenda"
+        fields:
+          - name: "events"
+            label: "Events"
+            widget: "list"
+            fields:
+              - {label: "Dag", name: "day", widget: "string"}
+              - {label: "Maand", name: "month", widget: "select", options: ["jan", "feb", "mrt", "apr", "mei", "jun", "jul", "aug", "sep", "okt", "nov", "dec"], default: "jan"}
+              - {label: "Titel", name: "title", widget: "string", hint: "Bijv.: Eerste Repetitie"}
+              - {label: "Tijd", name: "time", widget: "string", hint: "Bijv.: 19:00 - 21:00"}
+              - {label: "Locatie", name: "location", widget: "string", hint: "Bijv.: Muziekschool Voorburg"}
+              - {label: "Beschrijving", name: "description", widget: "text", hint: "Extra informatie over het event"}
+              - {label: "Link", name: "link", widget: "string", required: false, hint: "Link naar meer informatie (optioneel)"}
+
+  # Gallery Management (Array-based)
   - name: "gallery"
     label: "Galerij"
     label_singular: "Foto"
-    folder: "_data"
-    create: true
-    slug: "{{slug}}"
-    extension: "yml"
-    format: "yml"
-    fields:
-      - {label: "Foto", name: "image", widget: "image", hint: "Upload een nieuwe foto"}
-      - {label: "Bijschrift", name: "caption", widget: "string", hint: "Beschrijving van de foto"}
-      - {label: "Locatie", name: "location", widget: "string", hint: "Waar is de foto gemaakt?"}
+    files:
+      - file: "_data/gallery.yml"
+        label: "Gallery Images"
+        name: "gallery"
+        fields:
+          - name: "photos"
+            label: "Foto's"
+            widget: "list"
+            fields:
+              - {label: "Foto", name: "image", widget: "image", hint: "Upload een nieuwe foto"}
+              - {label: "Bijschrift", name: "caption", widget: "string", hint: "Beschrijving van de foto"}
+              - {label: "Locatie", name: "location", widget: "string", hint: "Waar is de foto gemaakt?"}
 
-  # FAQ Management
+  # FAQ Management (Array-based)
   - name: "faq"
     label: "Veelgestelde Vragen"
     label_singular: "FAQ Item"
-    folder: "_data"
-    create: true
-    slug: "{{slug}}"
-    extension: "yml"
-    format: "yml"
-    fields:
-      - {label: "Vraag", name: "question", widget: "string"}
-      - {label: "Antwoord", name: "answer", widget: "markdown"}
+    files:
+      - file: "_data/faq.yml"
+        label: "FAQ Items"
+        name: "faq"
+        fields:
+          - name: "items"
+            label: "FAQ Items"
+            widget: "list"
+            fields:
+              - {label: "Vraag", name: "question", widget: "string"}
+              - {label: "Antwoord", name: "answer", widget: "markdown"}
