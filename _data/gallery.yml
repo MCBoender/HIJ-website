@@ -7,18 +7,19 @@
 # 3. Click "New" to add a new photo
 # 4. Upload the image and add caption/location
 
-- image: "imgs/franse-kerk-concert.jpg"
-  caption: "Optreden in de Franse Kerk"
-  location: "Franse Kerk, Voorburg"
+photos:
+  - image: "imgs/franse-kerk-concert.jpg"
+    caption: "Optreden in de Franse Kerk"
+    location: "Franse Kerk, Voorburg"
 
-- image: "imgs/library-concert.jpg"
-  caption: "Muzikaal verhaal in de bibliotheek"
-  location: "Bibliotheek"
+  - image: "imgs/library-concert.jpg"
+    caption: "Muzikaal verhaal in de bibliotheek"
+    location: "Bibliotheek"
 
-- image: "imgs/park-concert.jpg"
-  caption: "Optreden in het park paviljoen"
-  location: "Park"
+  - image: "imgs/park-concert.jpg"
+    caption: "Optreden in het park paviljoen"
+    location: "Park"
 
-- image: "imgs/floating-ponton-concert.jpg"
-  caption: "Uniek optreden op het water"
-  location: "Water"
+  - image: "imgs/floating-ponton-concert.jpg"
+    caption: "Uniek optreden op het water"
+    location: "Water"
