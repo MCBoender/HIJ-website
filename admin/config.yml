@@ -2,7 +2,9 @@
 # H.I.J. Jeugdorkest Content Management
 
 backend:
-  name: test-repo
+  name: github
+  repo: MCBoender/HIJ-website
+  branch: main
 
 site_url: https://hij-jeugdorkest.netlify.app
 display_url: https://hij-jeugdorkest.netlify.app
@@ -32,7 +34,7 @@ collections:
       - {label: "Beschrijving", name: "description", widget: "text", hint: "Extra informatie over het event"}
       - {label: "Link", name: "link", widget: "string", required: false, hint: "Link naar meer informatie (optioneel)"}
 
-  # General Content Management
+  # Complete Website Content Management
   - name: "content"
     label: "Website Content"
     label_singular: "Content"
@@ -45,9 +47,18 @@ collections:
       - {label: "Homepage Titel", name: "homepage_title", widget: "string", default: "H.I.J. Jeugdorkest"}
       - {label: "Homepage Subtitle", name: "homepage_subtitle", widget: "string", default: "Het gezelligste jeugdorkest van Voorburg en ver daarbuiten!"}
       - {label: "CTA Tekst", name: "cta_text", widget: "string", default: "SPEEL MEE BIJ H.I.J."}
+      - {label: "Over Titel", name: "about_title", widget: "string", default: "Over H.I.J. Jeugdorkest"}
       - {label: "Over Ons Tekst", name: "about_text", widget: "markdown", default: "Welkom bij H.I.J. Jeugdorkest! Wij zijn een gezellige groep jonge muzikanten..."}
       - {label: "Contact Email", name: "contact_email", widget: "string", default: "info@hijjeugdorkest.nl"}
+      - {label: "Telefoon", name: "phone", widget: "string", default: "070-XXX XXXX"}
+      - {label: "Adres", name: "address", widget: "string", default: "Muziekschool Voorburg, Voorburg"}
       - {label: "Instagram Handle", name: "instagram_handle", widget: "string", default: "hijjeugdorkest"}
+      - {label: "Facebook URL", name: "facebook_url", widget: "string", default: "", hint: "Facebook pagina URL"}
+      - {label: "YouTube URL", name: "youtube_url", widget: "string", default: "", hint: "YouTube kanaal URL"}
+      - {label: "Welkomstbericht", name: "welcome_message", widget: "text", default: "Welkom op onze website! Hier vind je alle informatie over ons jeugdorkest."}
+      - {label: "Lidmaatschap Titel", name: "join_title", widget: "string", default: "Wil je meespelen?"}
+      - {label: "Lidmaatschap Tekst", name: "join_text", widget: "markdown", default: "Ben je geïnteresseerd in het H.I.J. Jeugdorkest? Neem contact met ons op voor meer informatie over repetities en proeflessen."}
+      - {label: "FAQ Intro", name: "faq_intro", widget: "text", default: "Hier vind je antwoorden op veelgestelde vragen over ons orkest."}
 
   # Gallery Management
   - name: "gallery"
