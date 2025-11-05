@@ -7,44 +7,69 @@ class CMSDataLoader {
         this.isLoaded = false;
     }
 
-    // Simple YAML parser for basic key-value pairs and arrays
+    // Improved YAML parser for key-value pairs, arrays, and multi-line text
     parseYAML(yamlText) {
-        const lines = yamlText.split('\n').filter(line => line.trim() && !line.startsWith('#'));
         const result = {};
-        let currentArray = null;
-        let currentObject = null;
-        let indentLevel = 0;
+        const lines = yamlText.split('\n');
+        let currentKey = null;
+        let currentValue = [];
+        let isMultiLine = false;
 
-        for (let line of lines) {
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
             const trimmed = line.trim();
-            if (!trimmed || trimmed.startsWith('#')) continue;
 
-            // Remove dashes for array items
+            // Skip empty lines and comments
+            if (!trimmed || trimmed.startsWith('#')) {
+                continue;
+            }
+
+            // Handle array items
             if (trimmed.startsWith('- ')) {
-                if (!currentArray) currentArray = [];
-                const value = trimmed.substring(2);
-                if (value.includes(': ')) {
-                    const [key, ...valParts] = value.split(': ');
-                    currentArray.push({ [key]: valParts.join(': ') });
+                const arrayItem = trimmed.substring(2);
+                if (arrayItem.includes(': ')) {
+                    const [key, ...valueParts] = arrayItem.split(': ');
+                    result[key] = valueParts.join(': ');
                 } else {
-                    currentArray.push(value);
+                    result[currentKey] = result[currentKey] || [];
+                    result[currentKey].push(arrayItem);
                 }
                 continue;
             }
 
-            // Regular key-value pairs
-            if (trimmed.includes(': ')) {
-                const [key, ...valueParts] = trimmed.split(': ');
-                const value = valueParts.join(': ').trim();
-                
-                if (value === '' || value === '|') {
-                    // Multi-line text starts next
-                    currentObject = {};
-                    result[key] = currentObject;
-                } else {
-                    result[key] = value;
+            // Handle key-value pairs
+            if (trimmed.includes(':')) {
+                const colonIndex = trimmed.indexOf(':');
+                const key = trimmed.substring(0, colonIndex).trim();
+                let value = trimmed.substring(colonIndex + 1).trim();
+
+                // If multi-line value (indicated by > or | at the end of the line)
+                if (value === '' || value === '>' || value === '|') {
+                    isMultiLine = true;
+                    currentKey = key;
+                    currentValue = [];
+                    continue;
+                }
+
+                // Single-line value
+                result[key] = value;
+                currentKey = null;
+                isMultiLine = false;
+            } else {
+                // This is a continuation of a multi-line value
+                if (isMultiLine && currentKey) {
+                    // Remove leading whitespace and add to current value
+                    const cleanLine = line.replace(/^\s+/, '');
+                    if (cleanLine.trim()) {
+                        currentValue.push(cleanLine);
+                    }
                 }
             }
+        }
+
+        // Process collected multi-line values
+        if (currentValue.length > 0 && currentKey) {
+            result[currentKey] = currentValue.join(' ');
         }
 
         return result;
@@ -60,6 +85,7 @@ class CMSDataLoader {
             const contentText = await contentResponse.text();
             this.data.content = this.parseYAML(contentText);
             console.log('Content loaded:', this.data.content);
+            console.log('Homepage subtitle:', this.data.content.homepage_subtitle);
 
             // Load agenda data
             const agendaResponse = await fetch('./_data/agenda.yml');
