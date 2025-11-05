@@ -7,45 +7,11 @@ class CMSDataLoader {
         this.isLoaded = false;
     }
 
-    // Super simple YAML parser - extract homepage_subtitle specifically
+    // Universal YAML parser for all multi-line values
     parseYAML(yamlText) {
         const result = {};
         const lines = yamlText.split('\n');
         
-        // First, let's just extract the homepage_subtitle specifically
-        let foundHomepageSubtitle = false;
-        let subtitleLines = [];
-        
-        for (let i = 0; i < lines.length; i++) {
-            const line = lines[i].trim();
-            
-            // Check if this is homepage_subtitle
-            if (line === 'homepage_subtitle:') {
-                foundHomepageSubtitle = true;
-                continue;
-            }
-            
-            // If we found homepage_subtitle, collect subsequent non-empty, non-comment lines
-            if (foundHomepageSubtitle) {
-                // Stop if we hit a new key (contains : and not indented)
-                if (line && line.includes(':') && !line.startsWith('-')) {
-                    // This is the start of a new key-value pair, we're done
-                    break;
-                }
-                
-                // Add non-empty, non-comment lines
-                if (line && !line.startsWith('#')) {
-                    subtitleLines.push(line);
-                }
-            }
-        }
-        
-        // Join all subtitle lines together
-        if (subtitleLines.length > 0) {
-            result.homepage_subtitle = subtitleLines.join(' ');
-        }
-        
-        // Now extract other simple key-value pairs
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i];
             
@@ -54,19 +20,47 @@ class CMSDataLoader {
                 continue;
             }
             
-            // Look for simple key: value pattern (not multi-line)
+            // Look for key-value patterns
             if (line.includes(':')) {
                 const colonIndex = line.indexOf(':');
                 const key = line.substring(0, colonIndex).trim();
                 let value = line.substring(colonIndex + 1).trim();
                 
-                // Skip homepage_subtitle as we handled it above
-                if (key === 'homepage_subtitle') {
-                    continue;
-                }
-                
-                // Handle single-line values only
-                if (value !== '' && value !== '>' && value !== '|') {
+                // Check if this is a multi-line value (empty after colon or > or |)
+                if (value === '' || value === '>' || value === '|') {
+                    // Multi-line: collect all subsequent lines until next key
+                    const multiLines = [];
+                    let j = i + 1;
+                    
+                    while (j < lines.length) {
+                        const nextLine = lines[j];
+                        const trimmedNext = nextLine.trim();
+                        
+                        // Stop if we find a new key (not indented, contains colon)
+                        if (trimmedNext && trimmedNext.includes(':') && !trimmedNext.startsWith('-') && !nextLine.match(/^\s/)) {
+                            // This is a new top-level key
+                            break;
+                        }
+                        
+                        // Skip empty lines
+                        if (!trimmedNext) {
+                            j++;
+                            continue;
+                        }
+                        
+                        // Add content from this line
+                        if (trimmedNext) {
+                            multiLines.push(trimmedNext);
+                        }
+                        
+                        j++;
+                    }
+                    
+                    // Join all lines with spaces
+                    result[key] = multiLines.join(' ');
+                    i = j - 1; // Skip to before the next key
+                } else {
+                    // Single-line value
                     result[key] = value.replace(/^"|"$/g, '');
                 }
             }
