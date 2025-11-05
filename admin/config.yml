@@ -1,0 +1,80 @@
+# Netlify CMS Configuration
+# H.I.J. Jeugdorkest Content Management
+
+backend:
+  name: github
+  repo: MCBoender/HIJ-website
+  # Example: if your GitHub username is "hij-voorburg" and repo name is "hij-website", use: hij-voorburg/hij-website
+  branch: main
+
+site_url: https://jijjeugdorkest.netlify.app
+display_url: https://jijjeugdorkest.netlify.app
+logo_url: https://jijjeugdorkest.netlify.app/imgs/hij-logo-header.png
+
+publish_mode: editorial_workflow
+
+media_folder: "imgs/uploads"
+public_folder: "/imgs/uploads"
+
+collections:
+  # Agenda Events Management
+  - name: "agenda"
+    label: "Agenda"
+    label_singular: "Event"
+    folder: "_data"
+    create: true
+    slug: "{{slug}}"
+    extension: "yml"
+    format: "yml"
+    fields:
+      - {label: "Dag", name: "day", widget: "string"}
+      - {label: "Maand", name: "month", widget: "select", options: ["jan", "feb", "mrt", "apr", "mei", "jun", "jul", "aug", "sep", "okt", "nov", "dec"], default: "jan"}
+      - {label: "Titel", name: "title", widget: "string", hint: "Bijv.: Eerste Repetitie"}
+      - {label: "Tijd", name: "time", widget: "string", hint: "Bijv.: 19:00 - 21:00"}
+      - {label: "Locatie", name: "location", widget: "string", hint: "Bijv.: Muziekschool Voorburg"}
+      - {label: "Beschrijving", name: "description", widget: "text", hint: "Extra informatie over het event"}
+      - {label: "Link", name: "link", widget: "string", required: false, hint: "Link naar meer informatie (optioneel)"}
+
+  # General Content Management
+  - name: "content"
+    label: "Website Content"
+    label_singular: "Content"
+    folder: "_data"
+    create: false
+    slug: "content"
+    extension: "yml"
+    format: "yml"
+    fields:
+      - {label: "Homepage Titel", name: "homepage_title", widget: "string", default: "H.I.J. Jeugdorkest"}
+      - {label: "Homepage Subtitle", name: "homepage_subtitle", widget: "string", default: "Het gezelligste jeugdorkest van Voorburg en ver daarbuiten!"}
+      - {label: "CTA Tekst", name: "cta_text", widget: "string", default: "SPEEL MEE BIJ H.I.J."}
+      - {label: "Over Ons Tekst", name: "about_text", widget: "markdown", default: "Welkom bij H.I.J. Jeugdorkest! Wij zijn een gezellige groep jonge muzikanten..."}
+      - {label: "Contact Email", name: "contact_email", widget: "string", default: "info@hijjeugdorkest.nl"}
+      - {label: "Instagram Handle", name: "instagram_handle", widget: "string", default: "hijjeugdorkest"}
+
+  # Gallery Management
+  - name: "gallery"
+    label: "Galerij"
+    label_singular: "Foto"
+    folder: "_data"
+    create: true
+    slug: "{{slug}}"
+    extension: "yml"
+    format: "yml"
+    fields:
+      - {label: "Foto", name: "image", widget: "image", hint: "Upload een nieuwe foto"}
+      - {label: "Bijschrift", name: "caption", widget: "string", hint: "Beschrijving van de foto"}
+      - {label: "Locatie", name: "location", widget: "string", hint: "Waar is de foto gemaakt?"}
+
+  # FAQ Management
+  - name: "faq"
+    label: "Veelgestelde Vragen"
+    label_singular: "FAQ Item"
+    folder: "_data"
+    create: true
+    slug: "{{slug}}"
+    extension: "yml"
+    format: "yml"
+    fields:
+      - {label: "Vraag", name: "question", widget: "string"}
+      - {label: "Antwoord", name: "answer", widget: "markdown"}
