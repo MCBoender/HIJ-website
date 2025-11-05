@@ -101,7 +101,7 @@ class CMSDataLoader {
 
         // Update homepage content
         if (data.content.homepage_title) {
-            const titleElement = document.querySelector('.hero-title h1');
+            const titleElement = document.querySelector('.hero-title');
             if (titleElement) titleElement.textContent = data.content.homepage_title;
         }
 
