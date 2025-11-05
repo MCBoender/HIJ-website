@@ -2,17 +2,13 @@
 # H.I.J. Jeugdorkest Content Management
 
 backend:
-  name: test-repo
+  name: github
+  repo: MCBoender/HIJ-website
   branch: main
 
-# client_id: jRdsqBWKwMR1T9rPV3mhzZtD7CbpTHuE7
-  # client_secret: CVGoC2q2bZr9Pp4l9s3DrIk5tAxUmdpZe7_u4wLSqGKJmj1HkTJoBUbewp0iwzL- 
-  # domain: mcremsie.eu,auth0.com
-  # Example: if your GitHub username is "hij-voorburg" and repo name is "hij-website", use: hij-voorburg/hij-website
-
-site_url: https://jijjeugdorkest.netlify.app
-display_url: https://jijjeugdorkest.netlify.app
-logo_url: https://jijjeugdorkest.netlify.app/imgs/hij-logo-header.png
+site_url: https://hij-jeugdorkest.netlify.app
+display_url: https://hij-jeugdorkest.netlify.app
+logo_url: https://hij-jeugdorkest.netlify.app/imgs/hij-logo-header.png
 
 publish_mode: editorial_workflow
 
