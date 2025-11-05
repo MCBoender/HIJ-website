@@ -1,0 +1,24 @@
+# Gallery Images
+# Beheer hier de foto's voor je galerij
+
+# Note: To add new photos via Netlify CMS:
+# 1. Go to /admin
+# 2. Click on "Galerij" collection
+# 3. Click "New" to add a new photo
+# 4. Upload the image and add caption/location
+
+- image: "imgs/placeholder-concert.jpg"
+  caption: "Ons laatste winterconcert in de Voorhof"
+  location: "Concertzaal De Voorhof"
+
+- image: "imgs/placeholder-rehearsal.jpg"
+  caption: "Een gezellige repetitie woensdagavond"
+  location: "Muziekschool Voorburg"
+
+- image: "imgs/placeholder-instruments.jpg"
+  caption: "Onze instrumenten klaar voor gebruik"
+  location: "Muziekschool Voorburg"
+
+- image: "imgs/placeholder-youth.jpg"
+  caption: "De enthousiaste leden van H.I.J. Jeugdorkest"
+  location: "Voorburg"
