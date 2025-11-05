@@ -86,7 +86,9 @@ class CMSDataLoader {
             console.log('Raw YAML text:', contentText.substring(0, 200) + '...');
             this.data.content = this.parseYAML(contentText);
             console.log('Content loaded:', this.data.content);
+            console.log('Homepage title:', this.data.content.homepage_title);
             console.log('Homepage subtitle:', this.data.content.homepage_subtitle);
+            console.log('About text:', this.data.content.about_text);
             console.log('Subtitle length:', this.data.content.homepage_subtitle ? this.data.content.homepage_subtitle.length : 'undefined');
 
             // Load agenda data
@@ -123,19 +125,34 @@ class CMSDataLoader {
 
     // Update page content with loaded data
     updatePageContent() {
-        if (!this.isLoaded) return;
+        console.log('updatePageContent called');
+        console.log('isLoaded:', this.isLoaded);
+        
+        if (!this.isLoaded) {
+            console.log('Not loaded, skipping update');
+            return;
+        }
 
         const data = this.data;
+        console.log('Data for update:', data.content);
 
         // Update homepage content
         if (data.content.homepage_title) {
             const titleElement = document.querySelector('.hero-title');
-            if (titleElement) titleElement.textContent = data.content.homepage_title;
+            console.log('Title element found:', titleElement);
+            if (titleElement) {
+                console.log('Updating title to:', data.content.homepage_title);
+                titleElement.textContent = data.content.homepage_title;
+            }
         }
 
         if (data.content.homepage_subtitle) {
             const subtitleElement = document.querySelector('.hero-subtitle');
-            if (subtitleElement) subtitleElement.textContent = data.content.homepage_subtitle;
+            console.log('Subtitle element found:', subtitleElement);
+            if (subtitleElement) {
+                console.log('Updating subtitle to:', data.content.homepage_subtitle);
+                subtitleElement.textContent = data.content.homepage_subtitle;
+            }
         }
 
         // Update about section
