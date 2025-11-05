@@ -1,21 +1,19 @@
-# FAQ Items
-# Veelgestelde vragen over H.I.J. Jeugdorkest
-
 items:
-  - question: "Moet ik al goed kunnen spelen?"
-    answer: "Nee! Als je een paar jaar speelervaring hebt en enthousiast bent, ben je welkom. We leren allemaal van elkaar in een ontspannen sfeer."
-
-  - question: "Wat kost lidmaatschap?"
-    answer: "De jaarlijkse contributie is €250. Dit dekt de kosten voor het gebruik van de oefenruimte en materialen."
-
-  - question: "Kan ik mijn eigen instrument meenemen?"
-    answer: "Ja, we verwachten dat je je eigen instrument en muziekstandaard meeneemt. Dit zorgt voor meer muziekplezier!"
-
-  - question: "Wat voor muziek spelen jullie?"
-    answer: "Van klassieke stukken tot film muziek en wereld muziek. Onze dirigent componeert ook speciaal voor ons!"
-
-  - question: "Kan ik eerst proberen?"
-    answer: "Jazeker! Je krijgt twee gratis proeflessen om te ervaren hoe gezellig het bij ons is."
-
-  - question: "Wat gebeurt er in de pauze?"
-    answer: "We spelen spelletjes zoals Weerwolven, Hitster en meer! Het is een gezellige manier om elkaar beter te leren kennen."
+  - question: Moet ik al goed kunnen spelen?
+    answer: Nee hoor! Als je een paar jaar speelervaring hebt en enthousiast bent,
+      ben je welkom. We leren allemaal van elkaar in een ontspannen sfeer.
+  - question: Wat kost lidmaatschap?
+    answer: De jaarlijkse contributie is €250. Dit dekt de kosten voor het gebruik
+      van de oefenruimte en materialen.
+  - question: Kan ik mijn eigen instrument meenemen?
+    answer: Ja, we verwachten dat je je eigen instrument en muziekstandaard
+      meeneemt. Dit zorgt voor meer muziekplezier!
+  - question: Wat voor muziek spelen jullie?
+    answer: Van klassieke stukken tot film muziek en wereld muziek. Onze dirigent
+      componeert ook speciaal voor ons!
+  - question: Kan ik eerst proberen?
+    answer: Jazeker! Je krijgt twee gratis proeflessen om te ervaren hoe gezellig
+      het bij ons is.
+  - question: Wat gebeurt er in de pauze?
+    answer: We spelen spelletjes zoals Weerwolven, Hitster en meer! Het is een
+      gezellige manier om elkaar beter te leren kennen.
