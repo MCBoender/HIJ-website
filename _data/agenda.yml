@@ -1,27 +1,23 @@
-# Agenda Events
-# Beheer hier je agenda events via Netlify CMS
-
 events:
   - day: "20"
-    month: "SEP"
-    title: "Optreden in de Franse Kerk"
-    time: "10:00 - 10:45"
-    location: "Franse Kerkstraat 24, Voorburg"
-    description: "Onderdeel van het Huygens Festival. Gratis toegang, wel graag aanmelden!"
-    link: "mailto:info@hijjeugdorkest.nl"
-
+    month: SEP
+    title: Optreden in de Franse Kerk
+    time: 10:00 - 10:45
+    location: Franse Kerkstraat 24, Voorburg
+    description: Onderdeel van het altijd gezellige Huygens Festival. Gratis
+      toegang, wel graag aanmelden!
+    link: mailto:info@hijjeugdorkest.nl
   - day: "04"
-    month: "OKT"
-    title: "Muzikaal Verhaal 'Tijger in de Trein'"
-    time: "11:00"
-    location: "Bibliotheek Leidschenveen, Den Haag"
-    description: "Gratis toegang, reservering vereist"
-    link: "mailto:info@hijjeugdorkest.nl"
-
+    month: OKT
+    title: Muzikaal Verhaal 'Tijger in de Trein'
+    time: 11:00
+    location: Bibliotheek Leidschenveen, Den Haag
+    description: Gratis toegang, reservering vereist
+    link: mailto:info@hijjeugdorkest.nl
   - day: "11"
-    month: "OKT"
-    title: "Muzikaal Verhaal 'Tijger in de Trein'"
-    time: "11:00"
-    location: "Bibliotheek Rijswijk"
-    description: "Gratis toegang, reservering vereist"
-    link: "mailto:info@hijjeugdorkest.nl"
+    month: OKT
+    title: Muzikaal Verhaal 'Tijger in de Trein'
+    time: 11:00
+    location: Bibliotheek Rijswijk
+    description: Gratis toegang, reservering vereist
+    link: mailto:info@hijjeugdorkest.nl
