@@ -121,19 +121,25 @@ class CMSDataLoader {
             // Load agenda data
             const agendaResponse = await fetch('./_data/agenda.yml');
             const agendaText = await agendaResponse.text();
-            this.data.agenda = this.parseYAML(agendaText);
+            const agendaData = this.parseYAML(agendaText);
+            // Handle both old format (direct array) and new format (wrapped in events)
+            this.data.agenda = agendaData.events || agendaData;
             console.log('Agenda loaded:', this.data.agenda);
 
             // Load FAQ data
             const faqResponse = await fetch('./_data/faq.yml');
             const faqText = await faqResponse.text();
-            this.data.faq = this.parseYAML(faqText);
+            const faqData = this.parseYAML(faqText);
+            // Handle both old format (direct array) and new format (wrapped in items)
+            this.data.faq = faqData.items || faqData;
             console.log('FAQ loaded:', this.data.faq);
 
             // Load gallery data
             const galleryResponse = await fetch('./_data/gallery.yml');
             const galleryText = await galleryResponse.text();
-            this.data.gallery = this.parseYAML(galleryText);
+            const galleryData = this.parseYAML(galleryText);
+            // Handle both old format (direct array) and new format (wrapped in photos)
+            this.data.gallery = galleryData.photos || galleryData;
             console.log('Gallery loaded:', this.data.gallery);
 
             this.isLoaded = true;
