@@ -408,16 +408,14 @@ class CMSDataLoader {
             const galleryItem = document.createElement('div');
             galleryItem.className = 'gallery-item';
             galleryItem.innerHTML = `
-                <div class="gallery-placeholder">
-                    <img src="${item.image}" alt="${item.caption}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                    <div class="placeholder-icon" style="display: none; width: 100%; height: 200px; border-radius: 8px; background: #f5f5f5; align-items: center; justify-content: center; flex-direction: column;">
-                        <div style="font-size: 48px;">🎵</div>
-                        <p>${item.caption}</p>
-                        <small>${item.location}</small>
-                    </div>
+                <img src="${item.image}" alt="${item.caption}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="placeholder-icon" style="display: none; width: 100%; height: 200px; border-radius: 8px; background: #f5f5f5; align-items: center; justify-content: center; flex-direction: column;">
+                    <div style="font-size: 48px;">🎵</div>
+                    <p>${item.caption}</p>
+                    <small>${item.location}</small>
                 </div>
-                <p>${item.caption}</p>
-                <small>${item.location}</small>
+                <h3>${item.caption}</h3>
+                <p class="gallery-location">${item.location}</p>
             `;
             galleryGrid.appendChild(galleryItem);
         });
