@@ -12,8 +12,8 @@ logo_url: https://hij-jeugdorkest.netlify.app/imgs/hij-logo-header.png
 
 # publish_mode: editorial_workflow  # Removed for direct publishing to fix timestamp issues
 
-media_folder: "imgs/uploads"
-public_folder: "/imgs/uploads"
+media_folder: "imgs"
+public_folder: "/imgs"
 
 collections:
   # Website Content (single file)
