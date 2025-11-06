@@ -402,26 +402,35 @@ class CMSDataLoader {
         // Clear existing content
         galleryGrid.innerHTML = '';
 
-        // Override the CSS gap with smaller spacing
-        galleryGrid.style.gap = '0.8em';
+        // Use the original CSS gap spacing (16px to be more compact)
+        galleryGrid.style.gap = '16px';
         
-        // Add new gallery items
+        // Add new gallery items - original design: just images, text as separate elements
         galleryItems.forEach((item, index) => {
             console.log('Gallery DEBUG: Adding item', index, ':', item.caption);
+            
+            // Create the gallery image (original design)
             const galleryItem = document.createElement('div');
             galleryItem.className = 'gallery-item';
-            galleryItem.style.marginBottom = '0'; // Remove any bottom margin
             galleryItem.innerHTML = `
-                <img src="${item.image}" alt="${item.caption}" style="width: 100%; max-height: 400px; object-fit: contain; border-radius: 8px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <div class="placeholder-icon" style="display: none; width: 100%; max-height: 400px; border-radius: 8px; background: #f5f5f5; align-items: center; justify-content: center; flex-direction: column;">
+                <img src="${item.image}" alt="${item.caption}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="placeholder-icon" style="display: none; width: 100%; height: 100%; background: #f5f5f5; align-items: center; justify-content: center;">
                     <div style="font-size: 48px;">🎵</div>
-                    <p style="text-align: center; margin: 0; font-size: 16px;">${item.caption}</p>
-                    <small style="text-align: center; margin: 0; font-size: 14px; color: #666;">${item.location}</small>
                 </div>
-                <h3 style="text-align: center; margin: 20px 0 8px 0; font-size: 18px; font-weight: 600;">${item.caption}</h3>
-                <p class="gallery-location" style="text-align: center; margin: 0; font-size: 14px; color: #ffffff; font-weight: 400;">${item.location}</p>
             `;
             galleryGrid.appendChild(galleryItem);
+            
+            // Add text below as separate elements
+            const caption = document.createElement('div');
+            caption.className = 'gallery-text';
+            caption.style.textAlign = 'center';
+            caption.style.marginTop = '8px';
+            caption.style.marginBottom = '16px';
+            caption.innerHTML = `
+                <h3 style="margin: 0 0 5px 0; font-size: 18px; font-weight: 600;">${item.caption}</h3>
+                <p style="margin: 0; font-size: 14px; color: #ffffff;">${item.location}</p>
+            `;
+            galleryGrid.appendChild(caption);
         });
         console.log('Gallery DEBUG: Gallery section update complete');
     }
