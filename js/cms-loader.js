@@ -407,6 +407,7 @@ class CMSDataLoader {
             console.log('Gallery DEBUG: Adding item', index, ':', item.caption);
             const galleryItem = document.createElement('div');
             galleryItem.className = 'gallery-item';
+            galleryItem.style.marginBottom = '3em'; // Good spacing between items on desktop
             galleryItem.innerHTML = `
                 <img src="${item.image}" alt="${item.caption}" style="width: 100%; max-height: 400px; object-fit: contain; border-radius: 8px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                 <div class="placeholder-icon" style="display: none; width: 100%; max-height: 400px; border-radius: 8px; background: #f5f5f5; align-items: center; justify-content: center; flex-direction: column;">
@@ -414,8 +415,8 @@ class CMSDataLoader {
                     <p style="text-align: center; margin: 0; font-size: 16px;">${item.caption}</p>
                     <small style="text-align: center; margin: 0; font-size: 14px; color: #666;">${item.location}</small>
                 </div>
-                <h3 style="text-align: center; margin: 15px 0 5px 0; font-size: 18px;">${item.caption}</h3>
-                <p class="gallery-location" style="text-align: center; margin: 0 0 15px 0; font-size: 14px; color: #666;">${item.location}</p>
+                <h3 style="text-align: center; margin: 20px 0 8px 0; font-size: 18px; font-weight: 600;">${item.caption}</h3>
+                <p class="gallery-location" style="text-align: center; margin: 0; font-size: 14px; color: #ffffff; font-weight: 400;">${item.location}</p>
             `;
             galleryGrid.appendChild(galleryItem);
         });
