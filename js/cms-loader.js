@@ -216,6 +216,7 @@ class CMSDataLoader {
                             }
                             
                             arrayItems.push(arrayItem);
+                            console.log('ARRAY DEBUG: Parsed array item:', arrayItem);
                         } else {
                             // Stop if we hit a new top-level key
                             if (trimmed.includes(':') && arrayLine.match(/^[^\s]/)) {
@@ -371,8 +372,16 @@ class CMSDataLoader {
         }
 
         // Update agenda section
+        console.log('AGENDA DEBUG: Checking agenda data...');
+        console.log('AGENDA DEBUG: data.agenda exists:', !!data.agenda);
+        console.log('AGENDA DEBUG: data.agenda is array:', Array.isArray(data.agenda));
+        console.log('AGENDA DEBUG: data.agenda length:', data.agenda ? data.agenda.length : 'undefined');
+        
         if (data.agenda && Array.isArray(data.agenda)) {
+            console.log('AGENDA DEBUG: Updating agenda section with', data.agenda.length, 'items');
             this.updateAgendaSection(data.agenda);
+        } else {
+            console.log('AGENDA DEBUG: Agenda section update skipped');
         }
 
         // Update FAQ section
