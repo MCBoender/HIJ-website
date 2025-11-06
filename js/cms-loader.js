@@ -214,35 +214,6 @@ class CMSDataLoader {
                                     k++;
                                 }
                                 j = k - 1;
-                                // Multi-line array item: - key:
-                                const itemKey = afterDash;
-                                let k = j + 1;
-                                
-                                while (k < lines.length) {
-                                    const subLine = lines[k];
-                                    
-                                    if (!subLine.trim()) {
-                                        k++;
-                                        continue;
-                                    }
-                                    
-                                    // Stop if we hit another array item or top-level key
-                                    if (subLine.trim().startsWith('-') || (subLine.includes(':') && subLine.match(/^[^\s]/))) {
-                                        break;
-                                    }
-                                    
-                                    // Process property lines
-                                    if (subLine.includes(':')) {
-                                        const subColon = subLine.indexOf(':');
-                                        const subKey = subLine.substring(0, subColon).trim();
-                                        let subValue = subLine.substring(subColon + 1).trim();
-                                        subValue = subValue.replace(/^"|"$/g, '');
-                                        arrayItem[subKey] = subValue;
-                                    }
-                                    
-                                    k++;
-                                }
-                                j = k - 1;
                             }
                             
                             arrayItems.push(arrayItem);
