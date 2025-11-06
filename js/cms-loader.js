@@ -9,18 +9,27 @@ class CMSDataLoader {
 
     // Robust YAML parser for agenda/events style structures
     parseYAML(yamlText) {
-        const lines = yamlText.split('\n').filter(line => line.trim() && !line.trim().startsWith('#'));
+        const lines = yamlText.split('\n');
         const result = {};
-        let currentSection = null;
-        let currentArray = null;
-        let currentObject = null;
-        let indentLevel = 0;
-
+        const contextStack = []; // Tracks: {type: 'root'|'section'|'array_item', data: object, indent: number}
+        
+        let currentLine = 0;
+        
         for (let line of lines) {
             const trimmed = line.trim();
             const match = line.match(/^(\s*)(.*)$/);
             const indent = match ? match[1].length : 0;
             const content = match ? match[2].trim() : trimmed;
+            
+            // Skip empty lines and comments
+            if (!content || content.startsWith('#')) continue;
+            
+            // Adjust context stack based on indentation
+            while (contextStack.length > 0 && indent <= contextStack[contextStack.length - 1].indent) {
+                contextStack.pop();
+            }
+            
+            console.log(`YAML DEBUG: Line ${currentLine+1} (indent ${indent}): ${content} | Context: ${contextStack.length > 0 ? contextStack[contextStack.length - 1].type : 'root'}`);
             
             // Array item (starts with dash)
             if (content.startsWith('-')) {
@@ -28,34 +37,46 @@ class CMSDataLoader {
                 
                 if (itemContent.includes(':')) {
                     // Array item with properties (object)
-                    if (!currentArray) {
-                        currentArray = [];
-                        if (currentSection) {
-                            result[currentSection] = currentArray;
-                        }
+                    const parentContext = contextStack[contextStack.length - 1];
+                    
+                    if (!parentContext || parentContext.type !== 'section') {
+                        console.warn('YAML DEBUG: Array item not within a section');
+                        continue;
                     }
                     
-                    // Parse key-value pairs for this array item
+                    // Create new array item
                     const itemData = {};
                     const pairs = itemContent.split(':');
                     const firstKey = pairs[0].trim();
                     const firstValue = pairs.slice(1).join(':').trim();
                     
-                    console.log(`YAML DEBUG: Array item property ${firstKey} = ${firstValue} in section '${currentSection}'`);
+                    console.log(`YAML DEBUG: Creating array item with property ${firstKey} = ${firstValue} in section '${parentContext.data}'`);
                     itemData[firstKey] = this.parseValue(firstValue);
-                    currentArray.push(itemData);
                     
-                    // FIX: Don't set currentObject to array item to prevent property assignment confusion
-                    // currentObject = itemData; // REMOVED THIS LINE
+                    // Add to parent section's array
+                    if (!parentContext.data.array) {
+                        parentContext.data.array = [];
+                    }
+                    parentContext.data.array.push(itemData);
+                    
+                    // Push new context for this array item
+                    contextStack.push({
+                        type: 'array_item',
+                        data: itemData,
+                        indent: indent
+                    });
                 } else {
                     // Simple array item (string/number)
-                    if (!currentArray) {
-                        currentArray = [];
-                        if (currentSection) {
-                            result[currentSection] = currentArray;
+                    console.log(`YAML DEBUG: Adding simple array item: ${itemContent}`);
+                    
+                    // Get parent context
+                    const parentContext = contextStack[contextStack.length - 1];
+                    if (parentContext && parentContext.type === 'section') {
+                        if (!parentContext.data.array) {
+                            parentContext.data.array = [];
                         }
+                        parentContext.data.array.push(this.parseValue(itemContent));
                     }
-                    currentArray.push(this.parseValue(itemContent));
                 }
             }
             // Regular key-value pair
@@ -65,19 +86,53 @@ class CMSDataLoader {
                 const value = valueParts.join(':').trim();
                 
                 if (value === '' || value === '|') {
-                    // Start of nested structure
-                    currentSection = keyTrim;
-                    currentArray = null;
-                    currentObject = null;
-                    console.log(`YAML DEBUG: Starting nested structure '${keyTrim}'`);
+                    // Start of nested structure (section)
+                    console.log(`YAML DEBUG: Starting section '${keyTrim}'`);
+                    
+                    // Start of nested structure (section)
+                    console.log(`YAML DEBUG: Starting section '${keyTrim}'`);
+                    
+                    // Get parent context for this section
+                    const parentContext = contextStack[contextStack.length - 1];
+                    
+                    if (parentContext) {
+                        // Nested section within another section
+                        parentContext.data[keyTrim] = {};
+                        contextStack.push({
+                            type: 'section',
+                            data: parentContext.data[keyTrim],
+                            indent: indent
+                        });
+                    } else {
+                        // Root level section
+                        result[keyTrim] = {};
+                        contextStack.push({
+                            type: 'section',
+                            data: result[keyTrim],
+                            indent: indent
+                        });
+                    }
                 } else {
                     // Simple key-value pair
-                    console.log(`YAML DEBUG: Setting ${keyTrim} = ${value} in ${currentSection || 'root'}`);
-                    result[keyTrim] = this.parseValue(value);
+                    const currentContext = contextStack[contextStack.length - 1];
+                    
+                    if (currentContext && currentContext.type === 'array_item') {
+                        console.log(`YAML DEBUG: Setting ${keyTrim} = ${value} in current array item`);
+                        currentContext.data[keyTrim] = this.parseValue(value);
+                    } else if (currentContext && currentContext.type === 'section') {
+                        console.log(`YAML DEBUG: Setting ${keyTrim} = ${value} in section '${Object.keys(currentContext.data)[0] || 'unknown'}'`);
+                        currentContext.data[keyTrim] = this.parseValue(value);
+                    } else {
+                        console.log(`YAML DEBUG: Setting ${keyTrim} = ${value} in root`);
+                        result[keyTrim] = this.parseValue(value);
+                    }
                 }
             }
+            
+            currentLine++;
         }
-
+        
+        console.log('YAML DEBUG: Final parsed structure:', result);
         return result;
     }
     
