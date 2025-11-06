@@ -4,22 +4,46 @@
 # Note: To add new photos via Netlify CMS:
 # 1. Go to /admin
 # 2. Click on "Galerij" collection
-# 3. Click "New" to add a new photo
+# 3. Fill in the empty photo fields (photo5, photo6, etc.)
 # 4. Upload the image and add caption/location
 
-photos:
-  - image: "imgs/franse-kerk-concert.jpg"
-    caption: "Optreden in de Franse Kerk"
-    location: "Franse Kerk, Voorburg"
+photo1_image: "imgs/franse-kerk-concert.jpg"
+photo1_caption: "Optreden in de Franse Kerk"
+photo1_location: "Franse Kerk, Voorburg"
 
-  - image: "imgs/library-concert.jpg"
-    caption: "Muzikaal verhaal in de bibliotheek"
-    location: "Bibliotheek"
+photo2_image: "imgs/library-concert.jpg"
+photo2_caption: "Muzikaal verhaal in de bibliotheek"
+photo2_location: "Bibliotheek"
 
-  - image: "imgs/park-concert.jpg"
-    caption: "Optreden in het park paviljoen"
-    location: "Park"
+photo3_image: "imgs/park-concert.jpg"
+photo3_caption: "Optreden in het park paviljoen"
+photo3_location: "Park"
 
-  - image: "imgs/floating-ponton-concert.jpg"
-    caption: "Uniek optreden op het water"
-    location: "Water"
+photo4_image: "imgs/floating-ponton-concert.jpg"
+photo4_caption: "Uniek optreden op het water"
+photo4_location: "Water"
+
+# Additional photo slots (leave empty to skip)
+photo5_image: ""
+photo5_caption: ""
+photo5_location: ""
+
+photo6_image: ""
+photo6_caption: ""
+photo6_location: ""
+
+photo7_image: ""
+photo7_caption: ""
+photo7_location: ""
+
+photo8_image: ""
+photo8_caption: ""
+photo8_location: ""
+
+photo9_image: ""
+photo9_caption: ""
+photo9_location: ""
+
+photo10_image: ""
+photo10_caption: ""
+photo10_location: ""
