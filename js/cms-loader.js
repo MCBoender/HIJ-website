@@ -7,9 +7,17 @@ class CMSDataLoader {
         this.isLoaded = false;
     }
 
+    // Helper method to check if section name suggests it's an array
+    isCommonArraySection(sectionName) {
+        const commonArrayNames = ['photos', 'items', 'events', 'faq', 'questions', 'images', 'media', 'content'];
+        const isArraySection = commonArrayNames.some(name => sectionName.toLowerCase().includes(name));
+        console.log(`YAML DEBUG: Checking '${sectionName}' against array names: ${isArraySection ? 'ARRAY SECTION' : 'NO MATCH'}`);
+        return isArraySection;
+    }
+
     // Helper method to check if the next lines contain array items
     isNextLinesArray(lines, startIndex, expectedIndent) {
-        for (let i = startIndex; i < Math.min(startIndex + 10, lines.length); i++) {
+        for (let i = startIndex; i < Math.min(startIndex + 15, lines.length); i++) {
             const line = lines[i].trim();
             if (!line || line.startsWith('#')) continue;
             
@@ -17,11 +25,25 @@ class CMSDataLoader {
             const indent = match ? match[1].length : 0;
             const content = match ? match[2].trim() : line;
             
+            // Found array item - this is definitely an array section
             if (content.startsWith('-')) {
                 return true;
-            } else if (content.includes(':') && indent === expectedIndent) {
-                // It's a property, not an array item
-                return false;
+            } else if (content.includes(':')) {
+                const [key, value] = content.split(':');
+                const valueTrim = value.trim();
+                
+                // If this is a property (has non-empty value) at same level, it's not an array section
+                if (valueTrim !== '' && indent === expectedIndent) {
+                    return false;
+                }
+            }
+        }
+        // If we get here and haven't found anything, check last few lines for array items
+        // Sometimes array sections are at the very end
+        for (let i = Math.max(0, lines.length - 10); i < lines.length; i++) {
+            const content = lines[i].trim();
+            if (content.startsWith('-')) {
+                return true;
             }
         }
         return false;
@@ -105,7 +127,9 @@ class CMSDataLoader {
                     console.log(`YAML DEBUG: Starting section '${keyTrim}'`);
                     
                     // Look ahead to see if this section contains array items
-                    const isArraySection = this.isNextLinesArray(lines, currentLine + 1, indent + 2);
+                    const isArraySection = this.isNextLinesArray(lines, currentLine + 1, indent + 2) || 
+                                         this.isCommonArraySection(keyTrim);
+                    console.log(`YAML DEBUG: Section '${keyTrim}' array detection result: ${isArraySection ? 'ARRAY' : 'OBJECT'}`);
                     
                     if (isArraySection) {
                         // This section will contain an array
@@ -251,15 +275,33 @@ class CMSDataLoader {
 
         const data = this.data;
 
+        console.log('Homepage DEBUG: Content data:', data.content);
+        console.log('Homepage DEBUG: Looking for .hero-subtitle element:', document.querySelector('.hero-subtitle'));
+
         // Update homepage content
         if (data.content.homepage_title) {
             const titleElement = document.querySelector('.hero-title');
-            if (titleElement) titleElement.textContent = data.content.homepage_title;
+            if (titleElement) {
+                console.log('Homepage DEBUG: Updating title to:', data.content.homepage_title);
+                titleElement.textContent = data.content.homepage_title;
+            } else {
+                console.log('Homepage DEBUG: Title element not found (.hero-title)');
+            }
+        } else {
+            console.log('Homepage DEBUG: homepage_title not found in content');
         }
 
         if (data.content.homepage_subtitle) {
             const subtitleElement = document.querySelector('.hero-subtitle');
-            if (subtitleElement) subtitleElement.textContent = data.content.homepage_subtitle;
+            if (subtitleElement) {
+                console.log('Homepage DEBUG: Updating subtitle to:', data.content.homepage_subtitle);
+                subtitleElement.textContent = data.content.homepage_subtitle;
+            } else {
+                console.log('Homepage DEBUG: Subtitle element not found (.hero-subtitle)');
+                console.log('Homepage DEBUG: All elements with "subtitle":', document.querySelectorAll('[class*="subtitle"]'));
+            }
+        } else {
+            console.log('Homepage DEBUG: homepage_subtitle not found in content');
         }
 
         // Update about section
