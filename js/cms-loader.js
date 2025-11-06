@@ -186,6 +186,36 @@ class CMSDataLoader {
                             } else {
                                 // Multi-line array item: - key:
                                 const itemKey = afterDash;
+                                arrayItem[itemKey] = '';  // Initialize with empty value
+                                let k = j + 1;
+                                
+                                while (k < lines.length) {
+                                    const subLine = lines[k];
+                                    
+                                    if (!subLine.trim()) {
+                                        k++;
+                                        continue;
+                                    }
+                                    
+                                    // Stop if we hit another array item or top-level key
+                                    if (subLine.trim().startsWith('-') || (subLine.includes(':') && subLine.match(/^[^\s]/))) {
+                                        break;
+                                    }
+                                    
+                                    // Process property lines
+                                    if (subLine.includes(':')) {
+                                        const subColon = subLine.indexOf(':');
+                                        const subKey = subLine.substring(0, subColon).trim();
+                                        let subValue = subLine.substring(subColon + 1).trim();
+                                        subValue = subValue.replace(/^"|"$/g, '');
+                                        arrayItem[subKey] = subValue;
+                                    }
+                                    
+                                    k++;
+                                }
+                                j = k - 1;
+                                // Multi-line array item: - key:
+                                const itemKey = afterDash;
                                 let k = j + 1;
                                 
                                 while (k < lines.length) {
@@ -261,10 +291,10 @@ class CMSDataLoader {
             console.log('About text:', this.data.content.about_text);
             console.log('Subtitle length:', this.data.content.homepage_subtitle ? this.data.content.homepage_subtitle.length : 'undefined');
 
-            // Load agenda data (using original parser)
+            // Load agenda data (using array parser)
             const agendaResponse = await fetch('./_data/agenda.yml');
             const agendaText = await agendaResponse.text();
-            const agendaData = this.parseYAML(agendaText);
+            const agendaData = this.parseYAMLArray(agendaText);
             // Handle both old format (direct array) and new format (wrapped in events)
             this.data.agenda = agendaData.events || agendaData;
             console.log('Agenda loaded:', this.data.agenda);
