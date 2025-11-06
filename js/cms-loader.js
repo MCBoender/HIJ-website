@@ -189,8 +189,10 @@ class CMSDataLoader {
             const agendaResponse = await fetch('./_data/agenda.yml');
             const agendaText = await agendaResponse.text();
             const agendaData = this.parseYAML(agendaText);
-            // Handle both old format (direct array) and new format (wrapped in events)
-            this.data.agenda = agendaData.events || agendaData;
+            // Extract the events array from the parsed YAML
+            this.data.agenda = agendaData.events || [];
+            console.log('Agenda raw data:', agendaData);
+            console.log('Agenda events array:', this.data.agenda);
             console.log('Agenda loaded:', this.data.agenda);
 
             // Load FAQ data - NEW: using numbered fields
@@ -365,7 +367,7 @@ class CMSDataLoader {
         }
     }
 
-    // Process agenda events: sort by date and filter out past events
+    // Process agenda events: sort by date and filter out events older than 1 month
     processAgendaEvents(events) {
         if (!events || !Array.isArray(events)) return [];
 
@@ -376,7 +378,11 @@ class CMSDataLoader {
         };
 
         const currentDate = new Date();
-        const today = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+        const oneMonthAgo = new Date();
+        oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
+        console.log('Agenda DEBUG: Current date:', currentDate.toDateString());
+        console.log('Agenda DEBUG: One month ago:', oneMonthAgo.toDateString());
 
         // Process each event
         const processedEvents = events.map(event => {
@@ -387,30 +393,39 @@ class CMSDataLoader {
             let year = currentDate.getFullYear();
             const eventDate = new Date(year, monthNum - 1, day);
             
-            // If event date has already passed this year, assume next year
-            if (eventDate < today) {
+            // If event date is in the past and has already passed this year, assume next year
+            if (eventDate < new Date(year, 0, 1)) {
                 year += 1;
+                const newEventDate = new Date(year, monthNum - 1, day);
+                return {
+                    ...event,
+                    eventDate: newEventDate,
+                    eventTimestamp: newEventDate.getTime()
+                };
             }
-            
-            const fullDate = new Date(year, monthNum - 1, day);
             
             return {
                 ...event,
-                eventDate: fullDate,
-                eventTimestamp: fullDate.getTime()
+                eventDate: eventDate,
+                eventTimestamp: eventDate.getTime()
             };
         });
 
-        // Filter out past events
-        const upcomingEvents = processedEvents.filter(event => event.eventDate >= today);
+        // Filter out events older than 1 month
+        const recentEvents = processedEvents.filter(event => {
+            const isRecent = event.eventDate >= oneMonthAgo;
+            if (!isRecent) {
+                console.log('Agenda DEBUG: Filtering out old event:', event.title, 'Date:', event.eventDate.toDateString());
+            }
+            return isRecent;
+        });
 
         // Sort by date (earliest first)
-        upcomingEvents.sort((a, b) => a.eventTimestamp - b.eventTimestamp);
+        recentEvents.sort((a, b) => a.eventTimestamp - b.eventTimestamp);
 
-        console.log('Agenda DEBUG: Current date:', today.toDateString());
-        console.log('Agenda DEBUG: Upcoming events count:', upcomingEvents.length);
+        console.log('Agenda DEBUG: Recent events count:', recentEvents.length);
 
-        return upcomingEvents;
+        return recentEvents;
     }
 
     // Update FAQ section
