@@ -79,7 +79,7 @@ collections:
               - {label: "Bijschrift", name: "caption", widget: "string", hint: "Beschrijving van de foto"}
               - {label: "Locatie", name: "location", widget: "string", hint: "Waar is de foto gemaakt?"}
 
-  # FAQ Management (Array-based)
+  # FAQ Management (Numbered Fields)
   - name: "faq"
     label: "Veelgestelde Vragen"
     label_singular: "FAQ Item"
@@ -88,9 +88,15 @@ collections:
         label: "FAQ Items"
         name: "faq"
         fields:
-          - name: "items"
-            label: "FAQ Items"
-            widget: "list"
-            fields:
-              - {label: "Vraag", name: "question", widget: "string"}
-              - {label: "Antwoord", name: "answer", widget: "markdown"}
+          - {label: "FAQ 1 - Vraag", name: "faq1_question", widget: "string", default: "Moet ik al goed kunnen spelen?"}
+          - {label: "FAQ 1 - Antwoord", name: "faq1_answer", widget: "text", default: "Nee! Als je een paar jaar speelervaring hebt en enthousiast bent, ben je welkom. We leren allemaal van elkaar in een ontspannen sfeer."}
+          - {label: "FAQ 2 - Vraag", name: "faq2_question", widget: "string", default: "Wat kost lidmaatschap?"}
+          - {label: "FAQ 2 - Antwoord", name: "faq2_answer", widget: "text", default: "De jaarlijkse contributie is €250. Dit dekt de kosten voor het gebruik van de oefenruimte en materialen."}
+          - {label: "FAQ 3 - Vraag", name: "faq3_question", widget: "string", default: "Kan ik mijn eigen instrument meenemen?"}
+          - {label: "FAQ 3 - Antwoord", name: "faq3_answer", widget: "text", default: "Ja, we verwachten dat je je eigen instrument en muziekstandaard meeneemt. Dit zorgt voor meer muziekplezier!"}
+          - {label: "FAQ 4 - Vraag", name: "faq4_question", widget: "string", default: "Wat voor muziek spelen jullie?"}
+          - {label: "FAQ 4 - Antwoord", name: "faq4_answer", widget: "text", default: "Van klassieke stukken tot film muziek en wereld muziek. Onze dirigent componeert ook speciaal voor ons!"}
+          - {label: "FAQ 5 - Vraag", name: "faq5_question", widget: "string", default: "Kan ik eerst proberen?"}
+          - {label: "FAQ 5 - Antwoord", name: "faq5_answer", widget: "text", default: "Jazeker! Je krijgt twee gratis proeflessen om te ervaren hoe gezellig het bij ons is."}
+          - {label: "FAQ 6 - Vraag", name: "faq6_question", widget: "string", default: "Wat gebeurt er in de pauze?"}
+          - {label: "FAQ 6 - Antwoord", name: "faq6_answer", widget: "text", default: "We spelen spelletjes zoals Weerwolven, Hitster en meer! Het is een gezellige manier om elkaar beter te leren kennen."}
