@@ -100,3 +100,21 @@ collections:
           - {label: "FAQ 5 - Antwoord", name: "faq5_answer", widget: "text", default: "Jazeker! Je krijgt twee gratis proeflessen om te ervaren hoe gezellig het bij ons is."}
           - {label: "FAQ 6 - Vraag", name: "faq6_question", widget: "string", default: "Wat gebeurt er in de pauze?"}
           - {label: "FAQ 6 - Antwoord", name: "faq6_answer", widget: "text", default: "We spelen spelletjes zoals Weerwolven, Hitster en meer! Het is een gezellige manier om elkaar beter te leren kennen."}
+          - {label: "FAQ 7 - Vraag", name: "faq7_question", widget: "string", required: false, default: "Hoe vaak zijn de repetities?", hint: "Lege velden worden automatisch overgeslagen"}
+          - {label: "FAQ 7 - Antwoord", name: "faq7_answer", widget: "text", required: false, default: "We repeteren elke week op dinsdagavond van 19:00 tot 21:00 uur."}
+          - {label: "FAQ 8 - Vraag", name: "faq8_question", widget: "string", required: false, default: ""}
+          - {label: "FAQ 8 - Antwoord", name: "faq8_answer", widget: "text", required: false, default: ""}
+          - {label: "FAQ 9 - Vraag", name: "faq9_question", widget: "string", required: false, default: ""}
+          - {label: "FAQ 9 - Antwoord", name: "faq9_answer", widget: "text", required: false, default: ""}
+          - {label: "FAQ 10 - Vraag", name: "faq10_question", widget: "string", required: false, default: ""}
+          - {label: "FAQ 10 - Antwoord", name: "faq10_answer", widget: "text", required: false, default: ""}
+          - {label: "FAQ 11 - Vraag", name: "faq11_question", widget: "string", required: false, default: ""}
+          - {label: "FAQ 11 - Antwoord", name: "faq11_answer", widget: "text", required: false, default: ""}
+          - {label: "FAQ 12 - Vraag", name: "faq12_question", widget: "string", required: false, default: ""}
+          - {label: "FAQ 12 - Antwoord", name: "faq12_answer", widget: "text", required: false, default: ""}
+          - {label: "FAQ 13 - Vraag", name: "faq13_question", widget: "string", required: false, default: ""}
+          - {label: "FAQ 13 - Antwoord", name: "faq13_answer", widget: "text", required: false, default: ""}
+          - {label: "FAQ 14 - Vraag", name: "faq14_question", widget: "string", required: false, default: ""}
+          - {label: "FAQ 14 - Antwoord", name: "faq14_answer", widget: "text", required: false, default: ""}
+          - {label: "FAQ 15 - Vraag", name: "faq15_question", widget: "string", required: false, default: ""}
+          - {label: "FAQ 15 - Antwoord", name: "faq15_answer", widget: "text", required: false, default: ""}
