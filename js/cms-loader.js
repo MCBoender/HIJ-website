@@ -208,8 +208,8 @@ class CMSDataLoader {
             const agendaResponse = await fetch('./_data/agenda.yml');
             const agendaText = await agendaResponse.text();
             const agendaData = this.parseYAML(agendaText);
-            // Handle both old format (direct array) and new format (wrapped in events)
-            this.data.agenda = agendaData.events || agendaData;
+            // New parser format: agendaData IS already the correct array
+            this.data.agenda = agendaData;
             console.log('Agenda loaded:', this.data.agenda);
             console.log('Agenda structure:', typeof this.data.agenda, Array.isArray(this.data.agenda) ? 'Array' : 'Object');
 
@@ -217,8 +217,8 @@ class CMSDataLoader {
             const faqResponse = await fetch('./_data/faq.yml');
             const faqText = await faqResponse.text();
             const faqData = this.parseYAML(faqText);
-            // Handle both old format (direct array) and new format (wrapped in items)
-            this.data.faq = faqData.items || faqData;
+            // New parser format: faqData IS already the correct array
+            this.data.faq = faqData;
             console.log('FAQ loaded:', this.data.faq);
             console.log('FAQ structure:', typeof this.data.faq, Array.isArray(this.data.faq) ? 'Array' : 'Object');
 
@@ -226,8 +226,8 @@ class CMSDataLoader {
             const galleryResponse = await fetch('./_data/gallery.yml');
             const galleryText = await galleryResponse.text();
             const galleryData = this.parseYAML(galleryText);
-            // Handle both old format (direct array) and new format (wrapped in photos)
-            this.data.gallery = galleryData.photos || galleryData;
+            // New parser format: galleryData IS already the correct array
+            this.data.gallery = galleryData;
             console.log('Gallery loaded:', this.data.gallery);
             console.log('Gallery structure:', typeof this.data.gallery, Array.isArray(this.data.gallery) ? 'Array' : 'Object');
 
