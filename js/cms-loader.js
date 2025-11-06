@@ -393,8 +393,8 @@ class CMSDataLoader {
             let year = currentDate.getFullYear();
             const eventDate = new Date(year, monthNum - 1, day);
             
-            // If event date is in the past and has already passed this year, assume next year
-            if (eventDate < new Date(year, 0, 1)) {
+            // If event date is in the past compared to current date, assume next year
+            if (eventDate < currentDate) {
                 year += 1;
                 const newEventDate = new Date(year, monthNum - 1, day);
                 return {
