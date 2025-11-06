@@ -279,11 +279,11 @@ class CMSDataLoader {
         console.log('Homepage DEBUG: Looking for .hero-subtitle element:', document.querySelector('.hero-subtitle'));
 
         // Update homepage content
-        if (data.homepage_title) {
+        if (data.content && data.content.homepage_title) {
             const titleElement = document.querySelector('.hero-title');
             if (titleElement) {
-                console.log('Homepage DEBUG: Updating title to:', data.homepage_title);
-                titleElement.textContent = data.homepage_title;
+                console.log('Homepage DEBUG: Updating title to:', data.content.homepage_title);
+                titleElement.textContent = data.content.homepage_title;
             } else {
                 console.log('Homepage DEBUG: Title element not found (.hero-title)');
             }
@@ -291,11 +291,11 @@ class CMSDataLoader {
             console.log('Homepage DEBUG: homepage_title not found in content data');
         }
 
-        if (data.homepage_subtitle) {
+        if (data.content && data.content.homepage_subtitle) {
             const subtitleElement = document.querySelector('.hero-subtitle');
             if (subtitleElement) {
-                console.log('Homepage DEBUG: Updating subtitle to:', data.homepage_subtitle);
-                subtitleElement.textContent = data.homepage_subtitle;
+                console.log('Homepage DEBUG: Updating subtitle to:', data.content.homepage_subtitle);
+                subtitleElement.textContent = data.content.homepage_subtitle;
             } else {
                 console.log('Homepage DEBUG: Subtitle element not found (.hero-subtitle)');
                 console.log('Homepage DEBUG: All elements with "subtitle":', document.querySelectorAll('[class*="subtitle"]'));
@@ -305,16 +305,16 @@ class CMSDataLoader {
         }
 
         // Update about section
-        if (data.about_title) {
+        if (data.content && data.content.about_title) {
             const aboutTitle = document.querySelector('#over-ons h2');
-            if (aboutTitle) aboutTitle.textContent = data.about_title;
+            if (aboutTitle) aboutTitle.textContent = data.content.about_title;
         }
 
-        if (data.about_text) {
+        if (data.content && data.content.about_text) {
             const aboutText = document.querySelector('#over-ons .about-text');
             if (aboutText) {
                 // Convert markdown-like formatting to HTML
-                const formattedText = data.about_text
+                const formattedText = data.content.about_text
                     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                     .replace(/\*(.*?)\*/g, '<em>$1</em>')
                     .replace(/\n\n/g, '</p><p>')
