@@ -7,47 +7,90 @@ class CMSDataLoader {
         this.isLoaded = false;
     }
 
-    // Simple YAML parser for basic key-value pairs and arrays
+    // Simple YAML parser for basic key-value pairs and nested arrays
     parseYAML(yamlText) {
-        const lines = yamlText.split('\n').filter(line => line.trim() && !line.startsWith('#'));
-        const result = {};
-        let currentArray = null;
-        let currentObject = null;
-        let indentLevel = 0;
-
-        for (let line of lines) {
-            const trimmed = line.trim();
-            if (!trimmed || trimmed.startsWith('#')) continue;
-
-            // Remove dashes for array items
-            if (trimmed.startsWith('- ')) {
-                if (!currentArray) currentArray = [];
-                const value = trimmed.substring(2);
-                if (value.includes(': ')) {
-                    const [key, ...valParts] = value.split(': ');
-                    currentArray.push({ [key]: valParts.join(': ') });
-                } else {
-                    currentArray.push(value);
-                }
-                continue;
+        const lines = yamlText.split('\n');
+        const stack = [{}];  // Stack for nested structures
+        let currentIndent = 0;
+        
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            if (!line.trim() || line.trim().startsWith('#')) continue;
+            
+            const indent = line.match(/^(\s*)/)[1].length;
+            const content = line.trim();
+            
+            // Adjust stack based on indentation
+            while (stack.length - 1 > Math.floor(indent / 2)) {
+                stack.pop();
             }
-
-            // Regular key-value pairs
-            if (trimmed.includes(': ')) {
-                const [key, ...valueParts] = trimmed.split(': ');
-                const value = valueParts.join(': ').trim();
+            
+            // Array item (starts with dash)
+            if (content.startsWith('-')) {
+                const itemContent = content.substring(1).trim();
+                const parent = stack[stack.length - 1];
+                
+                // Determine if this is a key-value pair or simple value
+                if (itemContent.includes(':')) {
+                    const [key, ...valueParts] = itemContent.split(':');
+                    const value = valueParts.join(':').trim();
+                    
+                    if (value === '') {
+                        // Nested object
+                        const newObj = {};
+                        parent[key] = newObj;
+                        stack.push(newObj);
+                    } else if (value === '|') {
+                        // Multi-line string (not implemented in this simple parser)
+                        parent[key] = '';
+                    } else {
+                        // Simple key-value pair
+                        parent[key] = this.parseValue(value);
+                    }
+                } else {
+                    // Simple value in array
+                    stack[stack.length - 2] = stack[stack.length - 2] || [];
+                    stack[stack.length - 2].push(this.parseValue(itemContent));
+                }
+            }
+            // Regular key-value pair
+            else if (content.includes(':')) {
+                const [key, ...valueParts] = content.split(':');
+                const value = valueParts.join(':').trim();
                 
                 if (value === '' || value === '|') {
-                    // Multi-line text starts next
-                    currentObject = {};
-                    result[key] = currentObject;
+                    // Nested object or array
+                    const newObj = {};
+                    stack[stack.length - 1][key] = newObj;
+                    stack.push(newObj);
                 } else {
-                    result[key] = value;
+                    // Simple key-value pair
+                    stack[stack.length - 1][key] = this.parseValue(value);
                 }
             }
         }
-
-        return result;
+        
+        return stack[0];
+    }
+    
+    // Parse simple values (remove quotes, convert booleans/numbers)
+    parseValue(value) {
+        // Remove quotes
+        if ((value.startsWith('"') && value.endsWith('"')) || 
+            (value.startsWith("'") && value.endsWith("'"))) {
+            return value.slice(1, -1);
+        }
+        
+        // Boolean
+        if (value === 'true') return true;
+        if (value === 'false') return false;
+        
+        // Number
+        if (!isNaN(value) && value.trim() !== '') {
+            return Number(value);
+        }
+        
+        return value;
     }
 
     // Fetch and parse YAML data files
@@ -66,18 +109,21 @@ class CMSDataLoader {
             const agendaText = await agendaResponse.text();
             this.data.agenda = this.parseYAML(agendaText);
             console.log('Agenda loaded:', this.data.agenda);
+            console.log('Agenda structure:', typeof this.data.agenda, Array.isArray(this.data.agenda) ? 'Array' : 'Object');
 
             // Load FAQ data
             const faqResponse = await fetch('./_data/faq.yml');
             const faqText = await faqResponse.text();
             this.data.faq = this.parseYAML(faqText);
             console.log('FAQ loaded:', this.data.faq);
+            console.log('FAQ structure:', typeof this.data.faq, Array.isArray(this.data.faq) ? 'Array' : 'Object');
 
             // Load gallery data
             const galleryResponse = await fetch('./_data/gallery.yml');
             const galleryText = await galleryResponse.text();
             this.data.gallery = this.parseYAML(galleryText);
             console.log('Gallery loaded:', this.data.gallery);
+            console.log('Gallery structure:', typeof this.data.gallery, Array.isArray(this.data.gallery) ? 'Array' : 'Object');
 
             this.isLoaded = true;
             console.log('All CMS data loaded successfully!');
