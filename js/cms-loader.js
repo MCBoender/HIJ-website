@@ -408,8 +408,8 @@ class CMSDataLoader {
             const galleryItem = document.createElement('div');
             galleryItem.className = 'gallery-item';
             galleryItem.innerHTML = `
-                <img src="${item.image}" alt="${item.caption}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <div class="placeholder-icon" style="display: none; width: 100%; height: 200px; border-radius: 8px; background: #f5f5f5; align-items: center; justify-content: center; flex-direction: column;">
+                <img src="${item.image}" alt="${item.caption}" style="width: 100%; max-height: 400px; object-fit: contain; border-radius: 8px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="placeholder-icon" style="display: none; width: 100%; max-height: 400px; border-radius: 8px; background: #f5f5f5; align-items: center; justify-content: center; flex-direction: column;">
                     <div style="font-size: 48px;">🎵</div>
                     <p>${item.caption}</p>
                     <small>${item.location}</small>
