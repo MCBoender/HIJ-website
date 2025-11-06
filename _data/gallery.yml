@@ -1,4 +1,4 @@
-photo1_image: /imgs/postcard.jpg
+photo1_image: /imgs/franse-kerk-concert.jpg
 photo1_caption: Optreden in de prachtige Franse Kerk
 photo1_location: Franse Kerk, Voorburg
 photo2_image: imgs/library-concert.jpg
@@ -10,9 +10,9 @@ photo3_location: Park
 photo4_image: imgs/floating-ponton-concert.jpg
 photo4_caption: Uniek optreden op het water
 photo4_location: Water
-photo5_image: ""
-photo5_caption: ""
-photo5_location: ""
+photo5_image: /imgs/postcard.jpg
+photo5_caption: Een test
+photo5_location: voor de site
 photo6_image: ""
 photo6_caption: ""
 photo6_location: ""
