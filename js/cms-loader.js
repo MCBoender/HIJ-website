@@ -41,9 +41,12 @@ class CMSDataLoader {
                     const firstKey = pairs[0].trim();
                     const firstValue = pairs.slice(1).join(':').trim();
                     
+                    console.log(`YAML DEBUG: Array item property ${firstKey} = ${firstValue} in section '${currentSection}'`);
                     itemData[firstKey] = this.parseValue(firstValue);
                     currentArray.push(itemData);
-                    currentObject = itemData;
+                    
+                    // FIX: Don't set currentObject to array item to prevent property assignment confusion
+                    // currentObject = itemData; // REMOVED THIS LINE
                 } else {
                     // Simple array item (string/number)
                     if (!currentArray) {
@@ -66,8 +69,10 @@ class CMSDataLoader {
                     currentSection = keyTrim;
                     currentArray = null;
                     currentObject = null;
+                    console.log(`YAML DEBUG: Starting nested structure '${keyTrim}'`);
                 } else {
                     // Simple key-value pair
+                    console.log(`YAML DEBUG: Setting ${keyTrim} = ${value} in ${currentSection || 'root'}`);
                     result[keyTrim] = this.parseValue(value);
                 }
             }
