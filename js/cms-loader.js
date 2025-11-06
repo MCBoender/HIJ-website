@@ -189,8 +189,8 @@ class CMSDataLoader {
             const agendaResponse = await fetch('./_data/agenda.yml');
             const agendaText = await agendaResponse.text();
             const agendaData = this.parseYAML(agendaText);
-            // Extract the events array from the parsed YAML
-            this.data.agenda = agendaData.events || [];
+            // Use numbered fields approach like FAQ and Gallery
+            this.data.agenda = this.processNumberedFields(agendaData, 'event', 'day');
             console.log('Agenda raw data:', agendaData);
             console.log('Agenda events array:', this.data.agenda);
             console.log('Agenda loaded:', this.data.agenda);
