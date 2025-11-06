@@ -95,110 +95,146 @@ class CMSDataLoader {
                     result[key] = multiLines.join(' ');
                     i = j;
                     continue;
-                }
-                
-                // Check if this is an array (next line starts with dash)
-                if ((i + 1 < lines.length) && lines[i + 1].trim().startsWith('-')) {
-                    // This is an array - collect all array items
-                    const arrayItems = [];
-                    let j = i + 1;
-                    
-                    while (j < lines.length) {
-                        const arrayLine = lines[j];
-                        const trimmed = arrayLine.trim();
+                } else if (value === '') {
+                    // Check if this is an array (next line starts with dash)
+                    if ((i + 1 < lines.length) && lines[i + 1].trim().startsWith('-')) {
+                        // This is an array - collect all array items
+                        const arrayItems = [];
+                        let j = i + 1;
                         
-                        if (!trimmed || trimmed.startsWith('#')) {
-                            j++;
-                            continue;
-                        }
-                        
-                        if (trimmed.startsWith('-')) {
-                            // Parse array item
-                            const arrayItem = {};
-                            const afterDash = trimmed.substring(1).trim();
+                        while (j < lines.length) {
+                            const arrayLine = lines[j];
+                            const trimmed = arrayLine.trim();
                             
-                            if (afterDash.includes(':')) {
-                                // Single-line array item: - key: value
-                                const keyColon = afterDash.indexOf(':');
-                                const itemKey = afterDash.substring(0, keyColon).trim();
-                                const itemValue = afterDash.substring(keyColon + 1).trim().replace(/^"|"$/g, '');
-                                arrayItem[itemKey] = itemValue;
-                            } else {
-                                // Multi-line array item: - key:
-                                const itemKey = afterDash;
-                                let k = j + 1;
+                            if (!trimmed || trimmed.startsWith('#')) {
+                                j++;
+                                continue;
+                            }
+                            
+                            if (trimmed.startsWith('-')) {
+                                // Parse array item
+                                const arrayItem = {};
+                                const afterDash = trimmed.substring(1).trim();
                                 
-                                while (k < lines.length) {
-                                    const subLine = lines[k];
+                                if (afterDash.includes(':')) {
+                                    // Single-line array item: - key: value
+                                    const keyColon = afterDash.indexOf(':');
+                                    const itemKey = afterDash.substring(0, keyColon).trim();
+                                    const itemValue = afterDash.substring(keyColon + 1).trim().replace(/^"|"$/g, '');
+                                    arrayItem[itemKey] = itemValue;
+                                } else {
+                                    // Multi-line array item: - key:
+                                    const itemKey = afterDash;
+                                    let k = j + 1;
                                     
-                                    if (!subLine.trim()) {
-                                        k++;
-                                        continue;
-                                    }
-                                    
-                                    // Stop if we hit another array item or top-level key
-                                    if (subLine.trim().startsWith('-') || (subLine.includes(':') && subLine.match(/^[^\s]/))) {
-                                        break;
-                                    }
-                                    
-                                    // Process property lines
-                                    if (subLine.includes(':')) {
-                                        const subColon = subLine.indexOf(':');
-                                        const subKey = subLine.substring(0, subColon).trim();
-                                        let subValue = subLine.substring(subColon + 1).trim();
+                                    while (k < lines.length) {
+                                        const subLine = lines[k];
                                         
-                                        // Handle multi-line values
-                                        if (subValue === '|') {
-                                            const subMultiLines = [];
-                                            let m = k + 1;
-                                            
-                                            while (m < lines.length) {
-                                                const subNextLine = lines[m];
-                                                const subNextTrimmed = subNextLine.trim();
-                                                
-                                                if (subNextTrimmed && subNextTrimmed.includes(':') && subNextLine.match(/^[^\s]/)) {
-                                                    break;
-                                                }
-                                                
-                                                if (subNextLine.match(/^\s/)) {
-                                                    const subLeadingSpaces = subNextLine.match(/^\s*/)[0].length;
-                                                    const subContent = subNextLine.substring(subLeadingSpaces);
-                                                    subMultiLines.push(subContent);
-                                                } else {
-                                                    subMultiLines.push(subNextTrimmed);
-                                                }
-                                                
-                                                m++;
-                                            }
-                                            
-                                            subValue = subMultiLines.join('\n');
-                                            k = m;
-                                        } else {
-                                            subValue = subValue.replace(/^"|"$/g, '');
+                                        if (!subLine.trim()) {
+                                            k++;
+                                            continue;
                                         }
                                         
-                                        arrayItem[subKey] = subValue;
+                                        // Stop if we hit another array item or top-level key
+                                        if (subLine.trim().startsWith('-') || (subLine.includes(':') && subLine.match(/^[^\s]/))) {
+                                            break;
+                                        }
+                                        
+                                        // Process property lines
+                                        if (subLine.includes(':')) {
+                                            const subColon = subLine.indexOf(':');
+                                            const subKey = subLine.substring(0, subColon).trim();
+                                            let subValue = subLine.substring(subColon + 1).trim();
+                                            
+                                            // Handle multi-line values
+                                            if (subValue === '|') {
+                                                const subMultiLines = [];
+                                                let m = k + 1;
+                                                
+                                                while (m < lines.length) {
+                                                    const subNextLine = lines[m];
+                                                    const subNextTrimmed = subNextLine.trim();
+                                                    
+                                                    if (subNextTrimmed && subNextTrimmed.includes(':') && subNextLine.match(/^[^\s]/)) {
+                                                        break;
+                                                    }
+                                                    
+                                                    if (subNextLine.match(/^\s/)) {
+                                                        const subLeadingSpaces = subNextLine.match(/^\s*/)[0].length;
+                                                        const subContent = subNextLine.substring(subLeadingSpaces);
+                                                        subMultiLines.push(subContent);
+                                                    } else {
+                                                        subMultiLines.push(subNextTrimmed);
+                                                    }
+                                                    
+                                                    m++;
+                                                }
+                                                
+                                                subValue = subMultiLines.join('\n');
+                                                k = m;
+                                            } else {
+                                                subValue = subValue.replace(/^"|"$/g, '');
+                                            }
+                                            
+                                            arrayItem[subKey] = subValue;
+                                        }
+                                        
+                                        k++;
                                     }
-                                    
-                                    k++;
+                                    j = k - 1;
                                 }
-                                j = k - 1;
+                                
+                                arrayItems.push(arrayItem);
+                            } else {
+                                // Stop if we hit a new top-level key
+                                if (trimmed.includes(':') && arrayLine.match(/^[^\s]/)) {
+                                    break;
+                                }
                             }
                             
-                            arrayItems.push(arrayItem);
-                        } else {
-                            // Stop if we hit a new top-level key
-                            if (trimmed.includes(':') && arrayLine.match(/^[^\s]/)) {
-                                break;
-                            }
+                            j++;
                         }
                         
-                        j++;
+                        result[key] = arrayItems;
+                        i = j;
+                        continue;
                     }
+                } else {
+                    // Check if this might be folded text (continuation lines)
+                    const nextLine = i + 1 < lines.length ? lines[i + 1] : '';
                     
-                    result[key] = arrayItems;
-                    i = j;
-                    continue;
+                    if (nextLine && nextLine.match(/^\s/) && nextLine.trim() && !nextLine.trim().startsWith('#')) {
+                        // This looks like folded text - first line + continuation
+                        const multiLines = [value];
+                        let j = i + 1;
+                        
+                        while (j < lines.length) {
+                            const continuationLine = lines[j];
+                            const trimmed = continuationLine.trim();
+                            
+                            // Stop if we hit a new top-level key
+                            if (trimmed && trimmed.includes(':') && !trimmed.startsWith('-') && !continuationLine.match(/^\s/) && !continuationLine.startsWith('-')) {
+                                break;
+                            }
+                            
+                            // Stop at empty lines
+                            if (!trimmed) {
+                                j++;
+                                continue;
+                            }
+                            
+                            // Add continuation line (just the content)
+                            if (trimmed) {
+                                multiLines.push(trimmed);
+                            }
+                            
+                            j++;
+                        }
+                        
+                        result[key] = multiLines.join(' ');
+                        i = j;
+                        continue;
+                    }
                 }
                 
                 // Simple single-line value
@@ -294,7 +330,7 @@ class CMSDataLoader {
             if (subtitleElement) {
                 console.log('Updating subtitle to:', data.content.homepage_subtitle);
                 console.log('Homepage DEBUG: Content data length:', Object.keys(data.content).length);
-                console.log('Homepage DEBUG: Subtitle length:', data.content.homepage_subtitle ? data.content.homepage_subtitle.length : 'undefined');
+                console.log('Homepage DEBUG: Subtitle length:', data.content.homepage_subtitle ? this.data.content.homepage_subtitle.length : 'undefined');
                 console.log('Homepage DEBUG: Full subtitle:', data.content.homepage_subtitle);
                 console.log('Homepage DEBUG: Looking for .hero-subtitle element:', subtitleElement);
                 
@@ -343,8 +379,16 @@ class CMSDataLoader {
         }
 
         // Update FAQ section
+        console.log('FAQ DEBUG: Checking FAQ data...');
+        console.log('FAQ DEBUG: data.faq exists:', !!data.faq);
+        console.log('FAQ DEBUG: data.faq is array:', Array.isArray(data.faq));
+        console.log('FAQ DEBUG: data.faq length:', data.faq ? data.faq.length : 'undefined');
+        
         if (data.faq && Array.isArray(data.faq)) {
+            console.log('FAQ DEBUG: Updating FAQ section with', data.faq.length, 'items');
             this.updateFAQSection(data.faq);
+        } else {
+            console.log('FAQ DEBUG: FAQ section update skipped');
         }
 
         // Update gallery section
@@ -384,14 +428,24 @@ class CMSDataLoader {
 
     // Update FAQ section
     updateFAQSection(faqItems) {
+        console.log('FAQ DEBUG: updateFAQSection called with', faqItems.length, 'items');
         const faqContainer = document.querySelector('#faq .faq-grid');
-        if (!faqContainer || !faqItems) return;
-
+        console.log('FAQ DEBUG: faqContainer found:', !!faqContainer);
+        if (!faqContainer) {
+            console.log('FAQ DEBUG: Container not found - trying alternatives...');
+            const faqSection = document.querySelector('#faq');
+            console.log('FAQ DEBUG: faqSection found:', !!faqSection);
+            return;
+        }
+        if (!faqItems) return;
+        
+        console.log('FAQ DEBUG: Clearing existing content');
         // Clear existing content
         faqContainer.innerHTML = '';
 
         // Add new FAQ items
         faqItems.forEach((item, index) => {
+            console.log('FAQ DEBUG: Adding item', index, ':', item.question);
             const faqItem = document.createElement('div');
             faqItem.className = 'faq-item';
             faqItem.innerHTML = `
@@ -400,6 +454,7 @@ class CMSDataLoader {
             `;
             faqContainer.appendChild(faqItem);
         });
+        console.log('FAQ DEBUG: FAQ section update complete');
     }
 
     // Update gallery section
