@@ -50,17 +50,111 @@ collections:
         label: "Agenda Events"
         name: "agenda"
         fields:
-          - name: "events"
-            label: "Events"
-            widget: "list"
-            fields:
-              - {label: "Dag", name: "day", widget: "string"}
-              - {label: "Maand", name: "month", widget: "select", options: ["jan", "feb", "mrt", "apr", "mei", "jun", "jul", "aug", "sep", "okt", "nov", "dec"], default: "jan"}
-              - {label: "Titel", name: "title", widget: "string", hint: "Bijv.: Eerste Repetitie"}
-              - {label: "Tijd", name: "time", widget: "string", hint: "Bijv.: 19:00 - 21:00"}
-              - {label: "Locatie", name: "location", widget: "string", hint: "Bijv.: Muziekschool Voorburg"}
-              - {label: "Beschrijving", name: "description", widget: "text", hint: "Extra informatie over het event"}
-              - {label: "Link", name: "link", widget: "string", required: false, hint: "Link naar meer informatie (optioneel)"}
+          - {label: "Event 1 - Dag", name: "event1_day", widget: "string", required: false, hint: "Bijv.: 15"}
+          - {label: "Event 1 - Maand", name: "event1_month", widget: "string", required: false, hint: "Bijv.: NOV"}
+          - {label: "Event 1 - Titel", name: "event1_title", widget: "string", required: false}
+          - {label: "Event 1 - Tijd", name: "event1_time", widget: "string", required: false, hint: "Bijv.: 19:00 - 21:00"}
+          - {label: "Event 1 - Locatie", name: "event1_location", widget: "string", required: false}
+          - {label: "Event 1 - Beschrijving", name: "event1_description", widget: "text", required: false}
+          - {label: "Event 1 - Link", name: "event1_link", widget: "string", required: false, hint: "Link naar meer informatie (optioneel)"}
+          - {label: "Event 2 - Dag", name: "event2_day", widget: "string", required: false, hint: "Bijv.: 20"}
+          - {label: "Event 2 - Maand", name: "event2_month", widget: "string", required: false, hint: "Bijv.: DEC"}
+          - {label: "Event 2 - Titel", name: "event2_title", widget: "string", required: false}
+          - {label: "Event 2 - Tijd", name: "event2_time", widget: "string", required: false, hint: "Bijv.: 14:00 - 16:00"}
+          - {label: "Event 2 - Locatie", name: "event2_location", widget: "string", required: false}
+          - {label: "Event 2 - Beschrijving", name: "event2_description", widget: "text", required: false}
+          - {label: "Event 2 - Link", name: "event2_link", widget: "string", required: false, hint: "Link naar meer informatie (optioneel)"}
+          - {label: "Event 3 - Dag", name: "event3_day", widget: "string", required: false}
+          - {label: "Event 3 - Maand", name: "event3_month", widget: "string", required: false}
+          - {label: "Event 3 - Titel", name: "event3_title", widget: "string", required: false}
+          - {label: "Event 3 - Tijd", name: "event3_time", widget: "string", required: false}
+          - {label: "Event 3 - Locatie", name: "event3_location", widget: "string", required: false}
+          - {label: "Event 3 - Beschrijving", name: "event3_description", widget: "text", required: false}
+          - {label: "Event 3 - Link", name: "event3_link", widget: "string", required: false}
+          - {label: "Event 4 - Dag", name: "event4_day", widget: "string", required: false}
+          - {label: "Event 4 - Maand", name: "event4_month", widget: "string", required: false}
+          - {label: "Event 4 - Titel", name: "event4_title", widget: "string", required: false}
+          - {label: "Event 4 - Tijd", name: "event4_time", widget: "string", required: false}
+          - {label: "Event 4 - Locatie", name: "event4_location", widget: "string", required: false}
+          - {label: "Event 4 - Beschrijving", name: "event4_description", widget: "text", required: false}
+          - {label: "Event 4 - Link", name: "event4_link", widget: "string", required: false}
+          - {label: "Event 5 - Dag", name: "event5_day", widget: "string", required: false}
+          - {label: "Event 5 - Maand", name: "event5_month", widget: "string", required: false}
+          - {label: "Event 5 - Titel", name: "event5_title", widget: "string", required: false}
+          - {label: "Event 5 - Tijd", name: "event5_time", widget: "string", required: false}
+          - {label: "Event 5 - Locatie", name: "event5_location", widget: "string", required: false}
+          - {label: "Event 5 - Beschrijving", name: "event5_description", widget: "text", required: false}
+          - {label: "Event 5 - Link", name: "event5_link", widget: "string", required: false}
+          - {label: "Event 6 - Dag", name: "event6_day", widget: "string", required: false}
+          - {label: "Event 6 - Maand", name: "event6_month", widget: "string", required: false}
+          - {label: "Event 6 - Titel", name: "event6_title", widget: "string", required: false}
+          - {label: "Event 6 - Tijd", name: "event6_time", widget: "string", required: false}
+          - {label: "Event 6 - Locatie", name: "event6_location", widget: "string", required: false}
+          - {label: "Event 6 - Beschrijving", name: "event6_description", widget: "text", required: false}
+          - {label: "Event 6 - Link", name: "event6_link", widget: "string", required: false}
+          - {label: "Event 7 - Dag", name: "event7_day", widget: "string", required: false}
+          - {label: "Event 7 - Maand", name: "event7_month", widget: "string", required: false}
+          - {label: "Event 7 - Titel", name: "event7_title", widget: "string", required: false}
+          - {label: "Event 7 - Tijd", name: "event7_time", widget: "string", required: false}
+          - {label: "Event 7 - Locatie", name: "event7_location", widget: "string", required: false}
+          - {label: "Event 7 - Beschrijving", name: "event7_description", widget: "text", required: false}
+          - {label: "Event 7 - Link", name: "event7_link", widget: "string", required: false}
+          - {label: "Event 8 - Dag", name: "event8_day", widget: "string", required: false}
+          - {label: "Event 8 - Maand", name: "event8_month", widget: "string", required: false}
+          - {label: "Event 8 - Titel", name: "event8_title", widget: "string", required: false}
+          - {label: "Event 8 - Tijd", name: "event8_time", widget: "string", required: false}
+          - {label: "Event 8 - Locatie", name: "event8_location", widget: "string", required: false}
+          - {label: "Event 8 - Beschrijving", name: "event8_description", widget: "text", required: false}
+          - {label: "Event 8 - Link", name: "event8_link", widget: "string", required: false}
+          - {label: "Event 9 - Dag", name: "event9_day", widget: "string", required: false}
+          - {label: "Event 9 - Maand", name: "event9_month", widget: "string", required: false}
+          - {label: "Event 9 - Titel", name: "event9_title", widget: "string", required: false}
+          - {label: "Event 9 - Tijd", name: "event9_time", widget: "string", required: false}
+          - {label: "Event 9 - Locatie", name: "event9_location", widget: "string", required: false}
+          - {label: "Event 9 - Beschrijving", name: "event9_description", widget: "text", required: false}
+          - {label: "Event 9 - Link", name: "event9_link", widget: "string", required: false}
+          - {label: "Event 10 - Dag", name: "event10_day", widget: "string", required: false}
+          - {label: "Event 10 - Maand", name: "event10_month", widget: "string", required: false}
+          - {label: "Event 10 - Titel", name: "event10_title", widget: "string", required: false}
+          - {label: "Event 10 - Tijd", name: "event10_time", widget: "string", required: false}
+          - {label: "Event 10 - Locatie", name: "event10_location", widget: "string", required: false}
+          - {label: "Event 10 - Beschrijving", name: "event10_description", widget: "text", required: false}
+          - {label: "Event 10 - Link", name: "event10_link", widget: "string", required: false}
+          - {label: "Event 11 - Dag", name: "event11_day", widget: "string", required: false}
+          - {label: "Event 11 - Maand", name: "event11_month", widget: "string", required: false}
+          - {label: "Event 11 - Titel", name: "event11_title", widget: "string", required: false}
+          - {label: "Event 11 - Tijd", name: "event11_time", widget: "string", required: false}
+          - {label: "Event 11 - Locatie", name: "event11_location", widget: "string", required: false}
+          - {label: "Event 11 - Beschrijving", name: "event11_description", widget: "text", required: false}
+          - {label: "Event 11 - Link", name: "event11_link", widget: "string", required: false}
+          - {label: "Event 12 - Dag", name: "event12_day", widget: "string", required: false}
+          - {label: "Event 12 - Maand", name: "event12_month", widget: "string", required: false}
+          - {label: "Event 12 - Titel", name: "event12_title", widget: "string", required: false}
+          - {label: "Event 12 - Tijd", name: "event12_time", widget: "string", required: false}
+          - {label: "Event 12 - Locatie", name: "event12_location", widget: "string", required: false}
+          - {label: "Event 12 - Beschrijving", name: "event12_description", widget: "text", required: false}
+          - {label: "Event 12 - Link", name: "event12_link", widget: "string", required: false}
+          - {label: "Event 13 - Dag", name: "event13_day", widget: "string", required: false}
+          - {label: "Event 13 - Maand", name: "event13_month", widget: "string", required: false}
+          - {label: "Event 13 - Titel", name: "event13_title", widget: "string", required: false}
+          - {label: "Event 13 - Tijd", name: "event13_time", widget: "string", required: false}
+          - {label: "Event 13 - Locatie", name: "event13_location", widget: "string", required: false}
+          - {label: "Event 13 - Beschrijving", name: "event13_description", widget: "text", required: false}
+          - {label: "Event 13 - Link", name: "event13_link", widget: "string", required: false}
+          - {label: "Event 14 - Dag", name: "event14_day", widget: "string", required: false}
+          - {label: "Event 14 - Maand", name: "event14_month", widget: "string", required: false}
+          - {label: "Event 14 - Titel", name: "event14_title", widget: "string", required: false}
+          - {label: "Event 14 - Tijd", name: "event14_time", widget: "string", required: false}
+          - {label: "Event 14 - Locatie", name: "event14_location", widget: "string", required: false}
+          - {label: "Event 14 - Beschrijving", name: "event14_description", widget: "text", required: false}
+          - {label: "Event 14 - Link", name: "event14_link", widget: "string", required: false}
+          - {label: "Event 15 - Dag", name: "event15_day", widget: "string", required: false}
+          - {label: "Event 15 - Maand", name: "event15_month", widget: "string", required: false}
+          - {label: "Event 15 - Titel", name: "event15_title", widget: "string", required: false}
+          - {label: "Event 15 - Tijd", name: "event15_time", widget: "string", required: false}
+          - {label: "Event 15 - Locatie", name: "event15_location", widget: "string", required: false}
+          - {label: "Event 15 - Beschrijving", name: "event15_description", widget: "text", required: false}
+          - {label: "Event 15 - Link", name: "event15_link", widget: "string", required: false}
 
   # Gallery Management (Numbered Fields)
   - name: "gallery"
