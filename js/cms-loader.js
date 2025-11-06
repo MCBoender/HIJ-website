@@ -337,18 +337,14 @@ class CMSDataLoader {
             }
         }
 
-        // Update FAQ section with backwards compatibility
-        if (data.faq) {
-            const faqData = data.faq.items || data.faq; // New format (wrapped) or old format (direct array)
-            console.log('FAQ data loaded:', faqData);
-            console.log('FAQ items object:', data.faq.items);
-            console.log('Is faqData array:', Array.isArray(faqData));
-            console.log('FAQ items array length:', data.faq.items ? data.faq.items.length : 'N/A');
-            if (Array.isArray(faqData)) {
-                this.updateFAQSection(faqData);
-            } else {
-                console.warn('FAQ data is not an array, skipping update');
-            }
+        // Update FAQ section
+        if (data.faq && Array.isArray(data.faq)) {
+            console.log('FAQ data loaded:', data.faq);
+            console.log('Is faqData array:', Array.isArray(data.faq));
+            console.log('FAQ data array length:', data.faq.length);
+            this.updateFAQSection(data.faq);
+        } else {
+            console.warn('FAQ data is not an array, skipping update');
         }
 
         // Update gallery section 
