@@ -62,7 +62,7 @@ collections:
               - {label: "Beschrijving", name: "description", widget: "text", hint: "Extra informatie over het event"}
               - {label: "Link", name: "link", widget: "string", required: false, hint: "Link naar meer informatie (optioneel)"}
 
-  # Gallery Management (Array-based)
+  # Gallery Management (Numbered Fields)
   - name: "gallery"
     label: "Galerij"
     label_singular: "Foto"
@@ -71,13 +71,36 @@ collections:
         label: "Gallery Images"
         name: "gallery"
         fields:
-          - name: "photos"
-            label: "Foto's"
-            widget: "list"
-            fields:
-              - {label: "Foto", name: "image", widget: "image", hint: "Upload een nieuwe foto"}
-              - {label: "Bijschrift", name: "caption", widget: "string", hint: "Beschrijving van de foto"}
-              - {label: "Locatie", name: "location", widget: "string", hint: "Waar is de foto gemaakt?"}
+          - {label: "Foto 1", name: "photo1_image", widget: "image", required: false, hint: "Upload een foto"}
+          - {label: "Bijschrift 1", name: "photo1_caption", widget: "string", required: false}
+          - {label: "Locatie 1", name: "photo1_location", widget: "string", required: false}
+          - {label: "Foto 2", name: "photo2_image", widget: "image", required: false, hint: "Upload een foto"}
+          - {label: "Bijschrift 2", name: "photo2_caption", widget: "string", required: false}
+          - {label: "Locatie 2", name: "photo2_location", widget: "string", required: false}
+          - {label: "Foto 3", name: "photo3_image", widget: "image", required: false, hint: "Upload een foto"}
+          - {label: "Bijschrift 3", name: "photo3_caption", widget: "string", required: false}
+          - {label: "Locatie 3", name: "photo3_location", widget: "string", required: false}
+          - {label: "Foto 4", name: "photo4_image", widget: "image", required: false, hint: "Upload een foto"}
+          - {label: "Bijschrift 4", name: "photo4_caption", widget: "string", required: false}
+          - {label: "Locatie 4", name: "photo4_location", widget: "string", required: false}
+          - {label: "Foto 5", name: "photo5_image", widget: "image", required: false, hint: "Upload een foto"}
+          - {label: "Bijschrift 5", name: "photo5_caption", widget: "string", required: false}
+          - {label: "Locatie 5", name: "photo5_location", widget: "string", required: false}
+          - {label: "Foto 6", name: "photo6_image", widget: "image", required: false, hint: "Upload een foto"}
+          - {label: "Bijschrift 6", name: "photo6_caption", widget: "string", required: false}
+          - {label: "Locatie 6", name: "photo6_location", widget: "string", required: false}
+          - {label: "Foto 7", name: "photo7_image", widget: "image", required: false, hint: "Upload een foto"}
+          - {label: "Bijschrift 7", name: "photo7_caption", widget: "string", required: false}
+          - {label: "Locatie 7", name: "photo7_location", widget: "string", required: false}
+          - {label: "Foto 8", name: "photo8_image", widget: "image", required: false, hint: "Upload een foto"}
+          - {label: "Bijschrift 8", name: "photo8_caption", widget: "string", required: false}
+          - {label: "Locatie 8", name: "photo8_location", widget: "string", required: false}
+          - {label: "Foto 9", name: "photo9_image", widget: "image", required: false, hint: "Upload een foto"}
+          - {label: "Bijschrift 9", name: "photo9_caption", widget: "string", required: false}
+          - {label: "Locatie 9", name: "photo9_location", widget: "string", required: false}
+          - {label: "Foto 10", name: "photo10_image", widget: "image", required: false, hint: "Upload een foto"}
+          - {label: "Bijschrift 10", name: "photo10_caption", widget: "string", required: false}
+          - {label: "Locatie 10", name: "photo10_location", widget: "string", required: false}
 
   # FAQ Management (Numbered Fields)
   - name: "faq"
