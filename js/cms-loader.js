@@ -270,8 +270,16 @@ class CMSDataLoader {
         }
 
         // Update FAQ section
+        console.log('FAQ DEBUG: Checking FAQ data...');
+        console.log('FAQ DEBUG: data.faq exists:', !!data.faq);
+        console.log('FAQ DEBUG: data.faq is array:', Array.isArray(data.faq));
+        console.log('FAQ DEBUG: data.faq length:', data.faq ? data.faq.length : 'undefined');
+        
         if (data.faq && Array.isArray(data.faq)) {
+            console.log('FAQ DEBUG: Updating FAQ section with', data.faq.length, 'items');
             this.updateFAQSection(data.faq);
+        } else {
+            console.log('FAQ DEBUG: FAQ section update skipped');
         }
 
         // Update gallery section
@@ -311,14 +319,24 @@ class CMSDataLoader {
 
     // Update FAQ section
     updateFAQSection(faqItems) {
+        console.log('FAQ DEBUG: updateFAQSection called with', faqItems.length, 'items');
         const faqContainer = document.querySelector('#faq .faq-grid');
-        if (!faqContainer || !faqItems) return;
-
+        console.log('FAQ DEBUG: faqContainer found:', !!faqContainer);
+        if (!faqContainer) {
+            console.log('FAQ DEBUG: Container not found - trying alternatives...');
+            const faqSection = document.querySelector('#faq');
+            console.log('FAQ DEBUG: faqSection found:', !!faqSection);
+            return;
+        }
+        if (!faqItems) return;
+        
+        console.log('FAQ DEBUG: Clearing existing content');
         // Clear existing content
         faqContainer.innerHTML = '';
 
         // Add new FAQ items
         faqItems.forEach((item, index) => {
+            console.log('FAQ DEBUG: Adding item', index, ':', item.question);
             const faqItem = document.createElement('div');
             faqItem.className = 'faq-item';
             faqItem.innerHTML = `
@@ -327,6 +345,7 @@ class CMSDataLoader {
             `;
             faqContainer.appendChild(faqItem);
         });
+        console.log('FAQ DEBUG: FAQ section update complete');
     }
 
     // Update gallery section
