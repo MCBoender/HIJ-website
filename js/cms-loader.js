@@ -338,23 +338,33 @@ class CMSDataLoader {
         }
 
         // Update FAQ section
-        if (data.faq && Array.isArray(data.faq)) {
-            console.log('FAQ data loaded:', data.faq);
-            console.log('Is faqData array:', Array.isArray(data.faq));
-            console.log('FAQ data array length:', data.faq.length);
-            this.updateFAQSection(data.faq);
+        if (data.faq) {
+            const faqData = Array.isArray(data.faq) ? data.faq : (data.faq.items || []);
+            console.log('FAQ data loaded:', faqData);
+            console.log('Is faqData array:', Array.isArray(faqData));
+            console.log('FAQ data array length:', faqData.length);
+            if (faqData.length > 0) {
+                this.updateFAQSection(faqData);
+            } else {
+                console.warn('FAQ data array is empty, skipping update');
+            }
         } else {
-            console.warn('FAQ data is not an array, skipping update');
+            console.warn('FAQ data not found, skipping update');
         }
 
         // Update gallery section 
-        if (data.gallery && Array.isArray(data.gallery)) {
-            console.log('Gallery data loaded:', data.gallery);
-            console.log('Is galleryData array:', Array.isArray(data.gallery));
-            console.log('Gallery data array length:', data.gallery.length);
-            this.updateGallerySection(data.gallery);
+        if (data.gallery) {
+            const galleryData = Array.isArray(data.gallery) ? data.gallery : (data.gallery.photos || []);
+            console.log('Gallery data loaded:', galleryData);
+            console.log('Is galleryData array:', Array.isArray(galleryData));
+            console.log('Gallery data array length:', galleryData.length);
+            if (galleryData.length > 0) {
+                this.updateGallerySection(galleryData);
+            } else {
+                console.warn('Gallery data array is empty, skipping update');
+            }
         } else {
-            console.warn('Gallery data is not an array, skipping update');
+            console.warn('Gallery data not found, skipping update');
         }
     }
 
