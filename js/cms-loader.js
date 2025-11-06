@@ -139,7 +139,7 @@ class CMSDataLoader {
     }
 
     // Process numbered fields and convert to arrays
-    processNumberedFields(data, sectionName) {
+    processNumberedFields(data, sectionName, requiredField) {
         const numberedFields = {};
         const items = [];
         
@@ -159,9 +159,9 @@ class CMSDataLoader {
             }
         }
         
-        // Convert to array, but only include items that have a question
+        // Convert to array, but only include items that have a required field
         for (let i = 1; i <= Object.keys(numberedFields).length; i++) {
-            if (numberedFields[i] && numberedFields[i].question && numberedFields[i].question.trim() !== '') {
+            if (numberedFields[i] && numberedFields[i][requiredField] && numberedFields[i][requiredField].trim() !== '') {
                 items.push(numberedFields[i]);
             }
         }
@@ -199,15 +199,16 @@ class CMSDataLoader {
             const faqData = this.parseYAML(faqText);
             console.log('FAQ raw data:', faqData);
             // Use numbered fields approach
-            this.data.faq = this.processNumberedFields(faqData, 'faq');
+            this.data.faq = this.processNumberedFields(faqData, 'faq', 'question');
             console.log('FAQ loaded:', this.data.faq);
 
-            // Load gallery data (keep existing format for now)
+            // Load gallery data - NEW: using numbered fields
             const galleryResponse = await fetch('./_data/gallery.yml');
             const galleryText = await galleryResponse.text();
             const galleryData = this.parseYAML(galleryText);
-            // Handle both old format (direct array) and new format (wrapped in photos)
-            this.data.gallery = galleryData.photos || galleryData;
+            console.log('Gallery raw data:', galleryData);
+            // Use numbered fields approach
+            this.data.gallery = this.processNumberedFields(galleryData, 'photo', 'image');
             console.log('Gallery loaded:', this.data.gallery);
 
             this.isLoaded = true;
