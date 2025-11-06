@@ -231,7 +231,7 @@ class CMSDataLoader {
             // Load agenda data with cache busting
             const agendaResponse = await fetch(`./_data/agenda.yml?v=${Date.now()}`);
             const agendaText = await agendaResponse.text();
-            const agendaData = this.parseYAML(agendaData);
+            const agendaData = this.parseYAML(agendaText);
             // New parser format: agendaData IS already the correct array
             this.data.agenda = agendaData;
             console.log('Agenda loaded:', this.data.agenda);
