@@ -7,103 +7,6 @@ class CMSDataLoader {
         this.isLoaded = false;
     }
 
-    // Check if YAML text contains array structures (lines starting with -)
-    containsArrays(yamlText) {
-        return yamlText.includes('\n- ') || yamlText.startsWith('- ');
-    }
-
-    // Simple YAML array parser for files with array structures
-    parseYAMLArrays(yamlText) {
-        const result = {};
-        const lines = yamlText.split('\n');
-        let i = 0;
-
-        while (i < lines.length) {
-            const line = lines[i].trim();
-            
-            // Skip empty lines
-            if (!line) {
-                i++;
-                continue;
-            }
-            
-            // Look for top-level keys followed by array items
-            if (line.includes(':') && i + 1 < lines.length) {
-                const nextLine = lines[i + 1].trim();
-                
-                // If current line ends with : and next line starts with - it's an array
-                if (line.endsWith(':') && nextLine.startsWith('-')) {
-                    const key = line.replace(':', '').trim();
-                    const arrayItems = [];
-                    
-                    let j = i + 1;
-                    while (j < lines.length) {
-                        const arrayLine = lines[j].trim();
-                        
-                        if (!arrayLine) {
-                            j++;
-                            continue;
-                        }
-                        
-                        if (arrayLine.startsWith('-')) {
-                            // Parse array item
-                            const afterDash = arrayLine.substring(1).trim();
-                            
-                            if (afterDash.includes(':')) {
-                                // Single line array item: - key: value
-                                const colon = afterDash.indexOf(':');
-                                const itemKey = afterDash.substring(0, colon).trim();
-                                const itemValue = afterDash.substring(colon + 1).trim().replace(/^"|"$/g, '');
-                                
-                                const arrayItem = {};
-                                arrayItem[itemKey] = itemValue;
-                                
-                                // Check if there are more properties on following lines
-                                let k = j + 1;
-                                while (k < lines.length) {
-                                    const subLine = lines[k].trim();
-                                    
-                                    // Stop at next array item or new top-level key
-                                    if (subLine.startsWith('-') || (subLine.includes(':') && !subLine.startsWith(' ') && !subLine.startsWith('-'))) {
-                                        break;
-                                    }
-                                    
-                                    // Parse nested properties
-                                    if (subLine.includes(':') && (subLine.startsWith('  ') || subLine.startsWith('    '))) {
-                                        const subColon = subLine.indexOf(':');
-                                        const subKey = subLine.substring(0, subColon).trim();
-                                        const subValue = subLine.substring(subColon + 1).trim().replace(/^"|"$/g, '');
-                                        arrayItem[subKey] = subValue;
-                                    }
-                                    
-                                    k++;
-                                }
-                                
-                                arrayItems.push(arrayItem);
-                                j = k - 1;
-                            }
-                        }
-                        
-                        j++;
-                    }
-                    
-                    result[key] = arrayItems;
-                    i = j + 1;
-                } else {
-                    // Use existing parser for non-array content
-                    const remainingYaml = lines.slice(i).join('\n');
-                    const parsed = this.parseYAML(remainingYaml);
-                    Object.assign(result, parsed);
-                    break;
-                }
-            } else {
-                i++;
-            }
-        }
-        
-        return result;
-    }
-
     // Flexible YAML parser for all values including folded text
     parseYAML(yamlText) {
         const result = {};
@@ -235,15 +138,35 @@ class CMSDataLoader {
         return result;
     }
 
-    // Smart parser that chooses the right method for the data
-    smartParseYAML(yamlText) {
-        if (this.containsArrays(yamlText)) {
-            console.log('Using array parser for this YAML');
-            return this.parseYAMLArrays(yamlText);
-        } else {
-            console.log('Using regular parser for this YAML');
-            return this.parseYAML(yamlText);
+    // Process numbered fields and convert to arrays
+    processNumberedFields(data, sectionName) {
+        const numberedFields = {};
+        const items = [];
+        
+        // Find all fields that start with the section name followed by a number
+        const pattern = new RegExp(`^${sectionName}(\\d+)_(\\w+)$`);
+        
+        for (const [key, value] of Object.entries(data)) {
+            const match = key.match(pattern);
+            if (match) {
+                const itemNumber = parseInt(match[1]);
+                const fieldName = match[2];
+                
+                if (!numberedFields[itemNumber]) {
+                    numberedFields[itemNumber] = {};
+                }
+                numberedFields[itemNumber][fieldName] = value;
+            }
         }
+        
+        // Convert to array
+        for (let i = 1; i <= Object.keys(numberedFields).length; i++) {
+            if (numberedFields[i]) {
+                items.push(numberedFields[i]);
+            }
+        }
+        
+        return items;
     }
 
     // Fetch and parse YAML data files
@@ -251,37 +174,38 @@ class CMSDataLoader {
         try {
             console.log('Loading CMS data...');
             
-            // Load content data (should use regular parser - no arrays)
+            // Load content data
             const contentResponse = await fetch('./_data/content.yml');
             const contentText = await contentResponse.text();
             console.log('Raw YAML text:', contentText.substring(0, 200) + '...');
-            this.data.content = this.parseYAML(contentText);  // Use regular parser for content
+            this.data.content = this.parseYAML(contentText);
             console.log('Content loaded:', this.data.content);
             console.log('Homepage title:', this.data.content.homepage_title);
             console.log('Homepage subtitle:', this.data.content.homepage_subtitle);
             console.log('About text:', this.data.content.about_text);
             console.log('Subtitle length:', this.data.content.homepage_subtitle ? this.data.content.homepage_subtitle.length : 'undefined');
 
-            // Load agenda data (may contain arrays)
+            // Load agenda data (keep existing format for now)
             const agendaResponse = await fetch('./_data/agenda.yml');
             const agendaText = await agendaResponse.text();
-            const agendaData = this.smartParseYAML(agendaText);
+            const agendaData = this.parseYAML(agendaText);
             // Handle both old format (direct array) and new format (wrapped in events)
             this.data.agenda = agendaData.events || agendaData;
             console.log('Agenda loaded:', this.data.agenda);
 
-            // Load FAQ data (may contain arrays)
+            // Load FAQ data - NEW: using numbered fields
             const faqResponse = await fetch('./_data/faq.yml');
             const faqText = await faqResponse.text();
-            const faqData = this.smartParseYAML(faqText);
-            // Handle both old format (direct array) and new format (wrapped in items)
-            this.data.faq = faqData.items || faqData;
+            const faqData = this.parseYAML(faqText);
+            console.log('FAQ raw data:', faqData);
+            // Use numbered fields approach
+            this.data.faq = this.processNumberedFields(faqData, 'faq');
             console.log('FAQ loaded:', this.data.faq);
 
-            // Load gallery data (may contain arrays)
+            // Load gallery data (keep existing format for now)
             const galleryResponse = await fetch('./_data/gallery.yml');
             const galleryText = await galleryResponse.text();
-            const galleryData = this.smartParseYAML(galleryText);
+            const galleryData = this.parseYAML(galleryText);
             // Handle both old format (direct array) and new format (wrapped in photos)
             this.data.gallery = galleryData.photos || galleryData;
             console.log('Gallery loaded:', this.data.gallery);
@@ -374,10 +298,7 @@ class CMSDataLoader {
 
         // Update agenda section
         if (data.agenda && Array.isArray(data.agenda)) {
-            console.log('AGENDA DEBUG: Updating agenda section with', data.agenda.length, 'items');
             this.updateAgendaSection(data.agenda);
-        } else {
-            console.log('AGENDA DEBUG: Agenda section update skipped');
         }
 
         // Update FAQ section
