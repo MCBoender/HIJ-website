@@ -222,23 +222,23 @@ class CMSDataLoader {
         try {
             console.log('Loading CMS data...');
             
-            // Load content data
-            const contentResponse = await fetch('./_data/content.yml');
+            // Load content data with cache busting
+            const contentResponse = await fetch(`./_data/content.yml?v=${Date.now()}`);
             const contentText = await contentResponse.text();
             this.data.content = this.parseYAML(contentText);
             console.log('Content loaded:', this.data.content);
 
-            // Load agenda data
-            const agendaResponse = await fetch('./_data/agenda.yml');
+            // Load agenda data with cache busting
+            const agendaResponse = await fetch(`./_data/agenda.yml?v=${Date.now()}`);
             const agendaText = await agendaResponse.text();
-            const agendaData = this.parseYAML(agendaText);
+            const agendaData = this.parseYAML(agendaData);
             // New parser format: agendaData IS already the correct array
             this.data.agenda = agendaData;
             console.log('Agenda loaded:', this.data.agenda);
             console.log('Agenda structure:', typeof this.data.agenda, Array.isArray(this.data.agenda) ? 'Array' : 'Object');
 
-            // Load FAQ data
-            const faqResponse = await fetch('./_data/faq.yml');
+            // Load FAQ data with cache busting
+            const faqResponse = await fetch(`./_data/faq.yml?v=${Date.now()}`);
             const faqText = await faqResponse.text();
             const faqData = this.parseYAML(faqText);
             // New parser format: faqData IS already the correct array
@@ -246,8 +246,8 @@ class CMSDataLoader {
             console.log('FAQ loaded:', this.data.faq);
             console.log('FAQ structure:', typeof this.data.faq, Array.isArray(this.data.faq) ? 'Array' : 'Object');
 
-            // Load gallery data
-            const galleryResponse = await fetch('./_data/gallery.yml');
+            // Load gallery data with cache busting
+            const galleryResponse = await fetch(`./_data/gallery.yml?v=${Date.now()}`);
             const galleryText = await galleryResponse.text();
             const galleryData = this.parseYAML(galleryText);
             // New parser format: galleryData IS already the correct array
@@ -351,18 +351,14 @@ class CMSDataLoader {
             }
         }
 
-        // Update gallery section with backwards compatibility
-        if (data.gallery) {
-            const galleryData = data.gallery.photos || data.gallery; // New format (wrapped) or old format (direct array)
-            console.log('Gallery data loaded:', galleryData);
-            console.log('Gallery photos object:', data.gallery.photos);
-            console.log('Is galleryData array:', Array.isArray(galleryData));
-            console.log('Gallery photos array length:', data.gallery.photos ? data.gallery.photos.length : 'N/A');
-            if (Array.isArray(galleryData)) {
-                this.updateGallerySection(galleryData);
-            } else {
-                console.warn('Gallery data is not an array, skipping update');
-            }
+        // Update gallery section 
+        if (data.gallery && Array.isArray(data.gallery)) {
+            console.log('Gallery data loaded:', data.gallery);
+            console.log('Is galleryData array:', Array.isArray(data.gallery));
+            console.log('Gallery data array length:', data.gallery.length);
+            this.updateGallerySection(data.gallery);
+        } else {
+            console.warn('Gallery data is not an array, skipping update');
         }
     }
 
@@ -427,13 +423,32 @@ class CMSDataLoader {
         galleryItems.forEach(item => {
             const galleryItem = document.createElement('div');
             galleryItem.className = 'gallery-item';
-            galleryItem.innerHTML = `
-                <div class="gallery-placeholder">
-                    <div class="placeholder-icon">🎵</div>
-                    <p>${item.caption}</p>
-                    <small>${item.location}</small>
-                </div>
+            
+            // Create actual image element instead of placeholder
+            const img = document.createElement('img');
+            img.src = item.image;
+            img.alt = item.caption || 'Gallery image';
+            img.onerror = function() {
+                // Fallback to placeholder if image fails to load
+                this.parentNode.innerHTML = `
+                    <div class="gallery-placeholder">
+                        <div class="placeholder-icon">🎵</div>
+                        <p>${item.caption || 'Gallery Image'}</p>
+                        <small>${item.location || ''}</small>
+                    </div>
+                `;
+            };
+            
+            // Create overlay with caption and location
+            const overlay = document.createElement('div');
+            overlay.className = 'gallery-overlay';
+            overlay.innerHTML = `
+                <p>${item.caption}</p>
+                <small>${item.location}</small>
             `;
+            
+            galleryItem.appendChild(img);
+            galleryItem.appendChild(overlay);
             galleryGrid.appendChild(galleryItem);
         });
     }
