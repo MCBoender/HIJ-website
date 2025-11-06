@@ -159,9 +159,9 @@ class CMSDataLoader {
             }
         }
         
-        // Convert to array
+        // Convert to array, but only include items that have a question
         for (let i = 1; i <= Object.keys(numberedFields).length; i++) {
-            if (numberedFields[i]) {
+            if (numberedFields[i] && numberedFields[i].question && numberedFields[i].question.trim() !== '') {
                 items.push(numberedFields[i]);
             }
         }
