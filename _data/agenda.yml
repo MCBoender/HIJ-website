@@ -1,4 +1,4 @@
-event1_year: "2026"
+event1_year: "2025"
 event1_day: "20"
 event1_month: SEP
 event1_title: Optreden in de Franse Kerk
@@ -22,14 +22,14 @@ event3_time: 11:00
 event3_location: Bibliotheek Rijswijk
 event3_description: Gratis toegang, reservering vereist
 event3_link: mailto:info@hijjeugdorkest.nl
-event4_year: "2026"
-event4_day: "12"
-event4_month: JAN
-event4_title: Concert at sea
-event4_time: 11:00
-event4_location: Scheveningse Slag
-event4_description: "All aboard! "
-event4_link: mailto:info@hijjeugdorkest.nl
+event4_year: ""
+event4_day: ""
+event4_month: ""
+event4_title: ""
+event4_time: ""
+event4_location: ""
+event4_description: ""
+event4_link: ""
 event5_year: ""
 event5_day: ""
 event5_month: ""
