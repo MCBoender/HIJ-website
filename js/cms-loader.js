@@ -311,7 +311,7 @@ class CMSDataLoader {
 
     // Update FAQ section
     updateFAQSection(faqItems) {
-        const faqContainer = document.querySelector('#faq .faq-list');
+        const faqContainer = document.querySelector('#faq .faq-grid');
         if (!faqContainer || !faqItems) return;
 
         // Clear existing content
