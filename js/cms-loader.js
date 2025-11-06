@@ -177,44 +177,43 @@ class CMSDataLoader {
                             const arrayItem = {};
                             const afterDash = trimmed.substring(1).trim();
                             
+                            // Always treat as multi-line item and read all properties
+                            // First, parse the first property on the same line as the dash
                             if (afterDash.includes(':')) {
-                                // Single-line array item: - key: value
-                                const keyColon = afterDash.indexOf(':');
-                                const itemKey = afterDash.substring(0, keyColon).trim();
-                                const itemValue = afterDash.substring(keyColon + 1).trim().replace(/^"|"$/g, '');
-                                arrayItem[itemKey] = itemValue;
-                            } else {
-                                // Multi-line array item: - key:
-                                const itemKey = afterDash;
-                                arrayItem[itemKey] = '';  // Initialize with empty value
-                                let k = j + 1;
-                                
-                                while (k < lines.length) {
-                                    const subLine = lines[k];
-                                    
-                                    if (!subLine.trim()) {
-                                        k++;
-                                        continue;
-                                    }
-                                    
-                                    // Stop if we hit another array item or top-level key
-                                    if (subLine.trim().startsWith('-') || (subLine.includes(':') && subLine.match(/^[^\s]/))) {
-                                        break;
-                                    }
-                                    
-                                    // Process property lines
-                                    if (subLine.includes(':')) {
-                                        const subColon = subLine.indexOf(':');
-                                        const subKey = subLine.substring(0, subColon).trim();
-                                        let subValue = subLine.substring(subColon + 1).trim();
-                                        subValue = subValue.replace(/^"|"$/g, '');
-                                        arrayItem[subKey] = subValue;
-                                    }
-                                    
-                                    k++;
-                                }
-                                j = k - 1;
+                                const firstColon = afterDash.indexOf(':');
+                                const firstKey = afterDash.substring(0, firstColon).trim();
+                                const firstValue = afterDash.substring(firstColon + 1).trim().replace(/^"|"$/g, '');
+                                arrayItem[firstKey] = firstValue;
                             }
+                            
+                            // Then continue reading subsequent properties on following lines
+                            let k = j + 1;
+                            
+                            while (k < lines.length) {
+                                const subLine = lines[k];
+                                
+                                if (!subLine.trim()) {
+                                    k++;
+                                    continue;
+                                }
+                                
+                                // Stop if we hit another array item or top-level key
+                                if (subLine.trim().startsWith('-') || (subLine.includes(':') && subLine.match(/^[^\s]/))) {
+                                    break;
+                                }
+                                
+                                // Process property lines
+                                if (subLine.includes(':')) {
+                                    const subColon = subLine.indexOf(':');
+                                    const subKey = subLine.substring(0, subColon).trim();
+                                    let subValue = subLine.substring(subColon + 1).trim();
+                                    subValue = subValue.replace(/^"|"$/g, '');
+                                    arrayItem[subKey] = subValue;
+                                }
+                                
+                                k++;
+                            }
+                            j = k - 1;
                             
                             arrayItems.push(arrayItem);
                             console.log('ARRAY DEBUG: Parsed array item:', arrayItem);
