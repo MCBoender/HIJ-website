@@ -383,25 +383,45 @@ class CMSDataLoader {
 
     // Update gallery section
     updateGallerySection(galleryItems) {
+        console.log('Gallery DEBUG: Checking gallery data...');
+        console.log('Gallery DEBUG: data.gallery exists:', !!galleryItems);
+        console.log('Gallery DEBUG: data.gallery is array:', Array.isArray(galleryItems));
+        console.log('Gallery DEBUG: data.gallery length:', galleryItems ? galleryItems.length : 'undefined');
+        
         const galleryGrid = document.querySelector('.gallery-grid');
-        if (!galleryGrid || !galleryItems) return;
+        if (!galleryGrid) {
+            console.log('Gallery DEBUG: galleryGrid not found');
+            return;
+        }
+        if (!galleryItems) {
+            console.log('Gallery DEBUG: galleryItems not found');
+            return;
+        }
 
+        console.log('Gallery DEBUG: Clearing existing content');
         // Clear existing content
         galleryGrid.innerHTML = '';
 
         // Add new gallery items
-        galleryItems.forEach(item => {
+        galleryItems.forEach((item, index) => {
+            console.log('Gallery DEBUG: Adding item', index, ':', item.caption);
             const galleryItem = document.createElement('div');
             galleryItem.className = 'gallery-item';
             galleryItem.innerHTML = `
                 <div class="gallery-placeholder">
-                    <div class="placeholder-icon">🎵</div>
-                    <p>${item.caption}</p>
-                    <small>${item.location}</small>
+                    <img src="${item.image}" alt="${item.caption}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="placeholder-icon" style="display: none; width: 100%; height: 200px; border-radius: 8px; background: #f5f5f5; align-items: center; justify-content: center; flex-direction: column;">
+                        <div style="font-size: 48px;">🎵</div>
+                        <p>${item.caption}</p>
+                        <small>${item.location}</small>
+                    </div>
                 </div>
+                <p>${item.caption}</p>
+                <small>${item.location}</small>
             `;
             galleryGrid.appendChild(galleryItem);
         });
+        console.log('Gallery DEBUG: Gallery section update complete');
     }
 
     // Initialize the data loader
