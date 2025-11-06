@@ -402,12 +402,15 @@ class CMSDataLoader {
         // Clear existing content
         galleryGrid.innerHTML = '';
 
+        // Override the CSS gap with smaller spacing
+        galleryGrid.style.gap = '0.8em';
+        
         // Add new gallery items
         galleryItems.forEach((item, index) => {
             console.log('Gallery DEBUG: Adding item', index, ':', item.caption);
             const galleryItem = document.createElement('div');
             galleryItem.className = 'gallery-item';
-            galleryItem.style.marginBottom = '0.8em'; // Very small spacing between items
+            galleryItem.style.marginBottom = '0'; // Remove any bottom margin
             galleryItem.innerHTML = `
                 <img src="${item.image}" alt="${item.caption}" style="width: 100%; max-height: 400px; object-fit: contain; border-radius: 8px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                 <div class="placeholder-icon" style="display: none; width: 100%; max-height: 400px; border-radius: 8px; background: #f5f5f5; align-items: center; justify-content: center; flex-direction: column;">
