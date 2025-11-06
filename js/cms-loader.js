@@ -389,20 +389,11 @@ class CMSDataLoader {
             const day = parseInt(event.day);
             const monthNum = monthMap[event.month.toUpperCase()];
             
-            // Assume current year, or next year if event month has already passed
-            let year = currentDate.getFullYear();
+            // Use provided year if available, otherwise assume current year
+            let year = event.year ? parseInt(event.year) : currentDate.getFullYear();
             const eventDate = new Date(year, monthNum - 1, day);
             
-            // If event date is in the past compared to current date, assume next year
-            if (eventDate < currentDate) {
-                year += 1;
-                const newEventDate = new Date(year, monthNum - 1, day);
-                return {
-                    ...event,
-                    eventDate: newEventDate,
-                    eventTimestamp: newEventDate.getTime()
-                };
-            }
+            console.log('Agenda DEBUG: Event date', event.title, year + '-', event.month, day);
             
             return {
                 ...event,
