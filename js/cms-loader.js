@@ -329,8 +329,16 @@ class CMSDataLoader {
         // Clear existing content
         agendaGrid.innerHTML = '';
 
-        // Add new events
-        events.forEach(event => {
+        console.log('Agenda DEBUG: Processing', events.length, 'events');
+
+        // Process and filter events
+        const processedEvents = this.processAgendaEvents(events);
+        
+        console.log('Agenda DEBUG: After processing', processedEvents.length, 'upcoming events');
+
+        // Add upcoming events
+        processedEvents.forEach((event, index) => {
+            console.log('Agenda DEBUG: Adding event', index, ':', event.title, 'on', event.day, event.month);
             const eventCard = document.createElement('div');
             eventCard.className = 'event-card';
             eventCard.innerHTML = `
@@ -348,6 +356,61 @@ class CMSDataLoader {
             `;
             agendaGrid.appendChild(eventCard);
         });
+
+        if (processedEvents.length === 0) {
+            const noEventsMsg = document.createElement('div');
+            noEventsMsg.className = 'no-events-message';
+            noEventsMsg.innerHTML = '<p>Geen aankomende events. Check binnenkort voor nieuwe activiteiten!</p>';
+            agendaGrid.appendChild(noEventsMsg);
+        }
+    }
+
+    // Process agenda events: sort by date and filter out past events
+    processAgendaEvents(events) {
+        if (!events || !Array.isArray(events)) return [];
+
+        // Convert month abbreviations to numbers
+        const monthMap = {
+            'JAN': 1, 'FEB': 2, 'MRT': 3, 'APR': 4, 'MEI': 5, 'JUN': 6,
+            'JUL': 7, 'AUG': 8, 'SEP': 9, 'OKT': 10, 'NOV': 11, 'DEC': 12
+        };
+
+        const currentDate = new Date();
+        const today = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+
+        // Process each event
+        const processedEvents = events.map(event => {
+            const day = parseInt(event.day);
+            const monthNum = monthMap[event.month.toUpperCase()];
+            
+            // Assume current year, or next year if event month has already passed
+            let year = currentDate.getFullYear();
+            const eventDate = new Date(year, monthNum - 1, day);
+            
+            // If event date has already passed this year, assume next year
+            if (eventDate < today) {
+                year += 1;
+            }
+            
+            const fullDate = new Date(year, monthNum - 1, day);
+            
+            return {
+                ...event,
+                eventDate: fullDate,
+                eventTimestamp: fullDate.getTime()
+            };
+        });
+
+        // Filter out past events
+        const upcomingEvents = processedEvents.filter(event => event.eventDate >= today);
+
+        // Sort by date (earliest first)
+        upcomingEvents.sort((a, b) => a.eventTimestamp - b.eventTimestamp);
+
+        console.log('Agenda DEBUG: Current date:', today.toDateString());
+        console.log('Agenda DEBUG: Upcoming events count:', upcomingEvents.length);
+
+        return upcomingEvents;
     }
 
     // Update FAQ section
