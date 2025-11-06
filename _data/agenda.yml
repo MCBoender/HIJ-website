@@ -1,11 +1,11 @@
 events:
   - day: "20"
     month: SEP
-    title: Optreden in de Franse Kerk
+    title: Optreden in de Franse Kerk in Voorburg
     time: 10:00 - 10:45
     location: Franse Kerkstraat 24, Voorburg
-    description: Onderdeel van het elk jaar meer dan gezellige Huygens Festival.
-      Gratis toegang, wel graag aanmelden!
+    description: Onderdeel van het meer dan gezellige Huygens Festival. Gratis
+      toegang, wel graag aanmelden!
     link: mailto:info@hijjeugdorkest.nl
   - day: "04"
     month: OKT
