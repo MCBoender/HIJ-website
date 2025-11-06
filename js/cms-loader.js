@@ -97,7 +97,9 @@ class CMSDataLoader {
                     continue;
                 } else if (value === '') {
                     // Check if this is an array (next line starts with dash)
+                    console.log('YAML DEBUG: Checking array for key:', key, 'Next line:', lines[i + 1] ? lines[i + 1].trim() : 'none');
                     if ((i + 1 < lines.length) && lines[i + 1].trim().startsWith('-')) {
+                        console.log('YAML DEBUG: Array detected for key:', key);
                         // This is an array - collect all array items
                         const arrayItems = [];
                         let j = i + 1;
@@ -270,6 +272,7 @@ class CMSDataLoader {
             // Handle both old format (direct array) and new format (wrapped in events)
             this.data.agenda = agendaData.events || agendaData;
             console.log('Agenda loaded:', this.data.agenda);
+            console.log('Agenda DEBUG: agendaData structure:', Object.keys(agendaData));
 
             // Load FAQ data
             const faqResponse = await fetch('./_data/faq.yml');
@@ -278,6 +281,8 @@ class CMSDataLoader {
             // Handle both old format (direct array) and new format (wrapped in items)
             this.data.faq = faqData.items || faqData;
             console.log('FAQ loaded:', this.data.faq);
+            console.log('FAQ DEBUG: faqData structure:', Object.keys(faqData));
+            console.log('FAQ DEBUG: Using FAQ array or data directly');
 
             // Load gallery data
             const galleryResponse = await fetch('./_data/gallery.yml');
