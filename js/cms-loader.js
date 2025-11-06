@@ -63,8 +63,8 @@ class CMSDataLoader {
                     // Preserve line breaks for multiline content
                     result[key] = multiLines.join('\n');
                     i = j - 1;
-                } else if (value === '>' || value === '') {
-                    // Handle folded or empty scalar
+                } else if (value === '>') {
+                    // Folded scalar (convert to single line)
                     const multiLines = [];
                     let j = i + 1;
                     
@@ -77,8 +77,8 @@ class CMSDataLoader {
                             break;
                         }
                         
-                        // Skip empty lines for empty scalar
-                        if (value === '' && !trimmedNext) {
+                        // Skip empty lines
+                        if (!trimmedNext) {
                             j++;
                             continue;
                         }
@@ -91,6 +91,8 @@ class CMSDataLoader {
                     
                     result[key] = multiLines.join(' ');
                     i = j - 1;
+                } else if (value === '') {
+                    // Empty value, continue to next check
                 } else {
                     // Check if this might be folded text (continuation lines)
                     const nextLine = i + 1 < lines.length ? lines[i + 1] : '';
@@ -136,115 +138,6 @@ class CMSDataLoader {
         return result;
     }
 
-    // Simple array parser for YAML arrays
-    parseYAMLArray(yamlText) {
-        const result = {};
-        const lines = yamlText.split('\n');
-        let i = 0;
-        
-        while (i < lines.length) {
-            const line = lines[i];
-            
-            // Skip empty lines and comments
-            if (!line.trim() || line.trim().startsWith('#')) {
-                i++;
-                continue;
-            }
-            
-            // Look for key-value patterns
-            if (line.includes(':')) {
-                const colonIndex = line.indexOf(':');
-                const key = line.substring(0, colonIndex).trim();
-                const value = line.substring(colonIndex + 1).trim();
-                
-                // Check if this is an empty value followed by array items
-                if (value === '' && i + 1 < lines.length && lines[i + 1].trim().startsWith('-')) {
-                    // This is an array - collect all array items
-                    const arrayItems = [];
-                    let j = i + 1;
-                    
-                    while (j < lines.length) {
-                        const arrayLine = lines[j];
-                        const trimmed = arrayLine.trim();
-                        
-                        if (!trimmed || trimmed.startsWith('#')) {
-                            j++;
-                            continue;
-                        }
-                        
-                        if (trimmed.startsWith('-')) {
-                            // Parse array item
-                            const arrayItem = {};
-                            const afterDash = trimmed.substring(1).trim();
-                            
-                            // Always treat as multi-line item and read all properties
-                            // First, parse the first property on the same line as the dash
-                            if (afterDash.includes(':')) {
-                                const firstColon = afterDash.indexOf(':');
-                                const firstKey = afterDash.substring(0, firstColon).trim();
-                                const firstValue = afterDash.substring(firstColon + 1).trim().replace(/^"|"$/g, '');
-                                arrayItem[firstKey] = firstValue;
-                            }
-                            
-                            // Then continue reading subsequent properties on following lines
-                            let k = j + 1;
-                            
-                            while (k < lines.length) {
-                                const subLine = lines[k];
-                                
-                                if (!subLine.trim()) {
-                                    k++;
-                                    continue;
-                                }
-                                
-                                // Stop if we hit another array item or top-level key
-                                if (subLine.trim().startsWith('-') || (subLine.includes(':') && subLine.match(/^[^\s]/))) {
-                                    break;
-                                }
-                                
-                                // Process property lines
-                                if (subLine.includes(':')) {
-                                    const subColon = subLine.indexOf(':');
-                                    const subKey = subLine.substring(0, subColon).trim();
-                                    let subValue = subLine.substring(subColon + 1).trim();
-                                    subValue = subValue.replace(/^"|"$/g, '');
-                                    arrayItem[subKey] = subValue;
-                                }
-                                
-                                k++;
-                            }
-                            j = k - 1;
-                            
-                            arrayItems.push(arrayItem);
-                            console.log('ARRAY DEBUG: Parsed array item:', arrayItem);
-                        } else {
-                            // Stop if we hit a new top-level key
-                            if (trimmed.includes(':') && arrayLine.match(/^[^\s]/)) {
-                                break;
-                            }
-                        }
-                        
-                        j++;
-                    }
-                    
-                    result[key] = arrayItems;
-                    i = j;
-                    continue;
-                } else {
-                    // Use main parser for non-array values
-                    const yamlWithKey = yamlText.substring(yamlText.indexOf(line));
-                    const mainParsed = this.parseYAML(yamlWithKey);
-                    Object.assign(result, mainParsed);
-                    break;
-                }
-            }
-            
-            i++;
-        }
-        
-        return result;
-    }
-
     // Fetch and parse YAML data files
     async loadData() {
         try {
@@ -261,26 +154,26 @@ class CMSDataLoader {
             console.log('About text:', this.data.content.about_text);
             console.log('Subtitle length:', this.data.content.homepage_subtitle ? this.data.content.homepage_subtitle.length : 'undefined');
 
-            // Load agenda data (using array parser)
+            // Load agenda data
             const agendaResponse = await fetch('./_data/agenda.yml');
             const agendaText = await agendaResponse.text();
-            const agendaData = this.parseYAMLArray(agendaText);
+            const agendaData = this.parseYAML(agendaText);
             // Handle both old format (direct array) and new format (wrapped in events)
             this.data.agenda = agendaData.events || agendaData;
             console.log('Agenda loaded:', this.data.agenda);
 
-            // Load FAQ data (using array parser)
+            // Load FAQ data
             const faqResponse = await fetch('./_data/faq.yml');
             const faqText = await faqResponse.text();
-            const faqData = this.parseYAMLArray(faqText);
+            const faqData = this.parseYAML(faqText);
             // Handle both old format (direct array) and new format (wrapped in items)
             this.data.faq = faqData.items || faqData;
             console.log('FAQ loaded:', this.data.faq);
 
-            // Load gallery data (using array parser)
+            // Load gallery data
             const galleryResponse = await fetch('./_data/gallery.yml');
             const galleryText = await galleryResponse.text();
-            const galleryData = this.parseYAMLArray(galleryText);
+            const galleryData = this.parseYAML(galleryText);
             // Handle both old format (direct array) and new format (wrapped in photos)
             this.data.gallery = galleryData.photos || galleryData;
             console.log('Gallery loaded:', this.data.gallery);
@@ -328,7 +221,7 @@ class CMSDataLoader {
             if (subtitleElement) {
                 console.log('Updating subtitle to:', data.content.homepage_subtitle);
                 console.log('Homepage DEBUG: Content data length:', Object.keys(data.content).length);
-                console.log('Homepage DEBUG: Subtitle length:', data.content.homepage_subtitle ? this.data.content.homepage_subtitle.length : 'undefined');
+                console.log('Homepage DEBUG: Subtitle length:', data.content.homepage_subtitle ? data.content.homepage_subtitle.length : 'undefined');
                 console.log('Homepage DEBUG: Full subtitle:', data.content.homepage_subtitle);
                 console.log('Homepage DEBUG: Looking for .hero-subtitle element:', subtitleElement);
                 
@@ -372,16 +265,8 @@ class CMSDataLoader {
         }
 
         // Update agenda section
-        console.log('AGENDA DEBUG: Checking agenda data...');
-        console.log('AGENDA DEBUG: data.agenda exists:', !!data.agenda);
-        console.log('AGENDA DEBUG: data.agenda is array:', Array.isArray(data.agenda));
-        console.log('AGENDA DEBUG: data.agenda length:', data.agenda ? data.agenda.length : 'undefined');
-        
         if (data.agenda && Array.isArray(data.agenda)) {
-            console.log('AGENDA DEBUG: Updating agenda section with', data.agenda.length, 'items');
             this.updateAgendaSection(data.agenda);
-        } else {
-            console.log('AGENDA DEBUG: Agenda section update skipped');
         }
 
         // Update FAQ section
