@@ -170,21 +170,27 @@ class CMSDataLoader {
             // Load agenda data
             const agendaResponse = await fetch('./_data/agenda.yml');
             const agendaText = await agendaResponse.text();
-            this.data.agenda = this.parseYAML(agendaText);
+            const agendaData = this.parseYAML(agendaText);
+            // Handle both old format (direct array) and new format (wrapped in events)
+            this.data.agenda = agendaData.events || agendaData;
             console.log('Agenda loaded:', this.data.agenda);
             console.log('Agenda structure:', typeof this.data.agenda, Array.isArray(this.data.agenda) ? 'Array' : 'Object');
 
             // Load FAQ data
             const faqResponse = await fetch('./_data/faq.yml');
             const faqText = await faqResponse.text();
-            this.data.faq = this.parseYAML(faqText);
+            const faqData = this.parseYAML(faqText);
+            // Handle both old format (direct array) and new format (wrapped in items)
+            this.data.faq = faqData.items || faqData;
             console.log('FAQ loaded:', this.data.faq);
             console.log('FAQ structure:', typeof this.data.faq, Array.isArray(this.data.faq) ? 'Array' : 'Object');
 
             // Load gallery data
             const galleryResponse = await fetch('./_data/gallery.yml');
             const galleryText = await galleryResponse.text();
-            this.data.gallery = this.parseYAML(galleryText);
+            const galleryData = this.parseYAML(galleryText);
+            // Handle both old format (direct array) and new format (wrapped in photos)
+            this.data.gallery = galleryData.photos || galleryData;
             console.log('Gallery loaded:', this.data.gallery);
             console.log('Gallery structure:', typeof this.data.gallery, Array.isArray(this.data.gallery) ? 'Array' : 'Object');
 
