@@ -1,48 +1,35 @@
-# Agenda Events - Numbered Fields Format
-# Beheer hier je agenda events via Netlify CMS (max 15 events)
-# Gebruik alleen velden met inhoud - lege velden worden automatisch overgeslagen
-
-# Event 1
-event1_year: "2025"
+event1_year: "2026"
 event1_day: "20"
-event1_month: "SEP"
-event1_title: "Optreden in de Franse Kerk"
-event1_time: "10:00 - 10:45"
-event1_location: "Franse Kerkstraat 24, Voorburg"
-event1_description: "Onderdeel van het Huygens Festival. Gratis toegang, wel graag aanmelden!"
-event1_link: "mailto:info@hijjeugdorkest.nl"
-
-# Event 2
+event1_month: SEP
+event1_title: Optreden in de Franse Kerk
+event1_time: 10:00 - 10:45
+event1_location: Franse Kerkstraat 24, Voorburg
+event1_description: Onderdeel van het Huygens Festival. Gratis toegang, wel graag even aanmelden!
+event1_link: mailto:info@hijjeugdorkest.nl
 event2_year: "2025"
 event2_day: "04"
-event2_month: "OKT"
-event2_title: "Muzikaal Verhaal 'Tijger in de Trein'"
-event2_time: "11:00"
-event2_location: "Bibliotheek Leidschenveen, Den Haag"
-event2_description: "Gratis toegang, reservering vereist"
-event2_link: "mailto:info@hijjeugdorkest.nl"
-
-# Event 3
+event2_month: OKT
+event2_title: Muzikaal Verhaal 'Tijger in de Trein'
+event2_time: 11:00
+event2_location: Bibliotheek Leidschenveen, Den Haag
+event2_description: Gratis toegang, reservering vereist
+event2_link: mailto:info@hijjeugdorkest.nl
 event3_year: "2025"
 event3_day: "11"
-event3_month: "OKT"
-event3_title: "Muzikaal Verhaal 'Tijger in de Trein'"
-event3_time: "11:00"
-event3_location: "Bibliotheek Rijswijk"
-event3_description: "Gratis toegang, reservering vereist"
-event3_link: "mailto:info@hijjeugdorkest.nl"
-
-# Event 4 (empty - voor nieuwe events)
-event4_year: ""
-event4_day: ""
-event4_month: ""
-event4_title: ""
-event4_time: ""
-event4_location: ""
-event4_description: ""
-event4_link: ""
-
-# Event 5 (empty - voor nieuwe events)
+event3_month: OKT
+event3_title: Muzikaal Verhaal 'Tijger in de Trein'
+event3_time: 11:00
+event3_location: Bibliotheek Rijswijk
+event3_description: Gratis toegang, reservering vereist
+event3_link: mailto:info@hijjeugdorkest.nl
+event4_year: "2026"
+event4_day: "12"
+event4_month: JAN
+event4_title: Concert at sea
+event4_time: 11:00
+event4_location: Scheveningse Slag
+event4_description: "All aboard! "
+event4_link: mailto:info@hijjeugdorkest.nl
 event5_year: ""
 event5_day: ""
 event5_month: ""
@@ -51,8 +38,6 @@ event5_time: ""
 event5_location: ""
 event5_description: ""
 event5_link: ""
-
-# Event 6 (empty - voor nieuwe events)
 event6_year: ""
 event6_day: ""
 event6_month: ""
@@ -61,8 +46,6 @@ event6_time: ""
 event6_location: ""
 event6_description: ""
 event6_link: ""
-
-# Event 7 (empty - voor nieuwe events)
 event7_year: ""
 event7_day: ""
 event7_month: ""
@@ -71,8 +54,6 @@ event7_time: ""
 event7_location: ""
 event7_description: ""
 event7_link: ""
-
-# Event 8 (empty - voor nieuwe events)
 event8_year: ""
 event8_day: ""
 event8_month: ""
@@ -81,8 +62,6 @@ event8_time: ""
 event8_location: ""
 event8_description: ""
 event8_link: ""
-
-# Event 9 (empty - voor nieuwe events)
 event9_year: ""
 event9_day: ""
 event9_month: ""
@@ -91,8 +70,6 @@ event9_time: ""
 event9_location: ""
 event9_description: ""
 event9_link: ""
-
-# Event 10 (empty - voor nieuwe events)
 event10_year: ""
 event10_day: ""
 event10_month: ""
@@ -101,8 +78,6 @@ event10_time: ""
 event10_location: ""
 event10_description: ""
 event10_link: ""
-
-# Event 11 (empty - voor nieuwe events)
 event11_year: ""
 event11_day: ""
 event11_month: ""
@@ -111,8 +86,6 @@ event11_time: ""
 event11_location: ""
 event11_description: ""
 event11_link: ""
-
-# Event 12 (empty - voor nieuwe events)
 event12_year: ""
 event12_day: ""
 event12_month: ""
@@ -121,8 +94,6 @@ event12_time: ""
 event12_location: ""
 event12_description: ""
 event12_link: ""
-
-# Event 13 (empty - voor nieuwe events)
 event13_year: ""
 event13_day: ""
 event13_month: ""
@@ -131,8 +102,6 @@ event13_time: ""
 event13_location: ""
 event13_description: ""
 event13_link: ""
-
-# Event 14 (empty - voor nieuwe events)
 event14_year: ""
 event14_day: ""
 event14_month: ""
@@ -141,8 +110,6 @@ event14_time: ""
 event14_location: ""
 event14_description: ""
 event14_link: ""
-
-# Event 15 (empty - voor nieuwe events)
 event15_year: ""
 event15_day: ""
 event15_month: ""
