@@ -7,16 +7,18 @@ class CMSDataLoader {
         this.isLoaded = false;
     }
 
-    // Flexible YAML parser for all values including folded text
+    // Flexible YAML parser for all values including folded text and arrays
     parseYAML(yamlText) {
         const result = {};
         const lines = yamlText.split('\n');
+        let i = 0;
         
-        for (let i = 0; i < lines.length; i++) {
+        while (i < lines.length) {
             const line = lines[i];
             
             // Skip empty lines and comments
             if (!line.trim() || line.trim().startsWith('#')) {
+                i++;
                 continue;
             }
             
@@ -62,9 +64,10 @@ class CMSDataLoader {
                     
                     // Preserve line breaks for multiline content
                     result[key] = multiLines.join('\n');
-                    i = j - 1;
-                } else if (value === '>') {
-                    // Folded scalar (convert to single line)
+                    i = j;
+                    continue;
+                } else if (value === '>' || value === '') {
+                    // Handle folded or empty scalar
                     const multiLines = [];
                     let j = i + 1;
                     
@@ -77,8 +80,8 @@ class CMSDataLoader {
                             break;
                         }
                         
-                        // Skip empty lines
-                        if (!trimmedNext) {
+                        // Skip empty lines for empty scalar
+                        if (value === '' && !trimmedNext) {
                             j++;
                             continue;
                         }
@@ -90,49 +93,119 @@ class CMSDataLoader {
                     }
                     
                     result[key] = multiLines.join(' ');
-                    i = j - 1;
-                } else if (value === '') {
-                    // Empty value, continue to next check
-                } else {
-                    // Check if this might be folded text (continuation lines)
-                    const nextLine = i + 1 < lines.length ? lines[i + 1] : '';
+                    i = j;
+                    continue;
+                }
+                
+                // Check if this is an array (next line starts with dash)
+                if ((i + 1 < lines.length) && lines[i + 1].trim().startsWith('-')) {
+                    // This is an array - collect all array items
+                    const arrayItems = [];
+                    let j = i + 1;
                     
-                    if (nextLine && nextLine.match(/^\s/) && nextLine.trim() && !nextLine.trim().startsWith('#')) {
-                        // This looks like folded text - first line + continuation
-                        const multiLines = [value];
-                        let j = i + 1;
+                    while (j < lines.length) {
+                        const arrayLine = lines[j];
+                        const trimmed = arrayLine.trim();
                         
-                        while (j < lines.length) {
-                            const continuationLine = lines[j];
-                            const trimmed = continuationLine.trim();
-                            
-                            // Stop if we hit a new top-level key
-                            if (trimmed && trimmed.includes(':') && !trimmed.startsWith('-') && !continuationLine.match(/^\s/) && !continuationLine.startsWith('-')) {
-                                break;
-                            }
-                            
-                            // Stop at empty lines
-                            if (!trimmed) {
-                                j++;
-                                continue;
-                            }
-                            
-                            // Add continuation line (just the content)
-                            if (trimmed) {
-                                multiLines.push(trimmed);
-                            }
-                            
+                        if (!trimmed || trimmed.startsWith('#')) {
                             j++;
+                            continue;
                         }
                         
-                        result[key] = multiLines.join(' ');
-                        i = j - 1;
-                    } else {
-                        // Simple single-line value
-                        result[key] = value.replace(/^"|"$/g, '');
+                        if (trimmed.startsWith('-')) {
+                            // Parse array item
+                            const arrayItem = {};
+                            const afterDash = trimmed.substring(1).trim();
+                            
+                            if (afterDash.includes(':')) {
+                                // Single-line array item: - key: value
+                                const keyColon = afterDash.indexOf(':');
+                                const itemKey = afterDash.substring(0, keyColon).trim();
+                                const itemValue = afterDash.substring(keyColon + 1).trim().replace(/^"|"$/g, '');
+                                arrayItem[itemKey] = itemValue;
+                            } else {
+                                // Multi-line array item: - key:
+                                const itemKey = afterDash;
+                                let k = j + 1;
+                                
+                                while (k < lines.length) {
+                                    const subLine = lines[k];
+                                    
+                                    if (!subLine.trim()) {
+                                        k++;
+                                        continue;
+                                    }
+                                    
+                                    // Stop if we hit another array item or top-level key
+                                    if (subLine.trim().startsWith('-') || (subLine.includes(':') && subLine.match(/^[^\s]/))) {
+                                        break;
+                                    }
+                                    
+                                    // Process property lines
+                                    if (subLine.includes(':')) {
+                                        const subColon = subLine.indexOf(':');
+                                        const subKey = subLine.substring(0, subColon).trim();
+                                        let subValue = subLine.substring(subColon + 1).trim();
+                                        
+                                        // Handle multi-line values
+                                        if (subValue === '|') {
+                                            const subMultiLines = [];
+                                            let m = k + 1;
+                                            
+                                            while (m < lines.length) {
+                                                const subNextLine = lines[m];
+                                                const subNextTrimmed = subNextLine.trim();
+                                                
+                                                if (subNextTrimmed && subNextTrimmed.includes(':') && subNextLine.match(/^[^\s]/)) {
+                                                    break;
+                                                }
+                                                
+                                                if (subNextLine.match(/^\s/)) {
+                                                    const subLeadingSpaces = subNextLine.match(/^\s*/)[0].length;
+                                                    const subContent = subNextLine.substring(subLeadingSpaces);
+                                                    subMultiLines.push(subContent);
+                                                } else {
+                                                    subMultiLines.push(subNextTrimmed);
+                                                }
+                                                
+                                                m++;
+                                            }
+                                            
+                                            subValue = subMultiLines.join('\n');
+                                            k = m;
+                                        } else {
+                                            subValue = subValue.replace(/^"|"$/g, '');
+                                        }
+                                        
+                                        arrayItem[subKey] = subValue;
+                                    }
+                                    
+                                    k++;
+                                }
+                                j = k - 1;
+                            }
+                            
+                            arrayItems.push(arrayItem);
+                        } else {
+                            // Stop if we hit a new top-level key
+                            if (trimmed.includes(':') && arrayLine.match(/^[^\s]/)) {
+                                break;
+                            }
+                        }
+                        
+                        j++;
                     }
+                    
+                    result[key] = arrayItems;
+                    i = j;
+                    continue;
                 }
+                
+                // Simple single-line value
+                result[key] = value.replace(/^"|"$/g, '');
             }
+            
+            i++;
         }
         
         return result;
@@ -270,16 +343,8 @@ class CMSDataLoader {
         }
 
         // Update FAQ section
-        console.log('FAQ DEBUG: Checking FAQ data...');
-        console.log('FAQ DEBUG: data.faq exists:', !!data.faq);
-        console.log('FAQ DEBUG: data.faq is array:', Array.isArray(data.faq));
-        console.log('FAQ DEBUG: data.faq length:', data.faq ? data.faq.length : 'undefined');
-        
         if (data.faq && Array.isArray(data.faq)) {
-            console.log('FAQ DEBUG: Updating FAQ section with', data.faq.length, 'items');
             this.updateFAQSection(data.faq);
-        } else {
-            console.log('FAQ DEBUG: FAQ section update skipped');
         }
 
         // Update gallery section
@@ -319,24 +384,14 @@ class CMSDataLoader {
 
     // Update FAQ section
     updateFAQSection(faqItems) {
-        console.log('FAQ DEBUG: updateFAQSection called with', faqItems.length, 'items');
         const faqContainer = document.querySelector('#faq .faq-grid');
-        console.log('FAQ DEBUG: faqContainer found:', !!faqContainer);
-        if (!faqContainer) {
-            console.log('FAQ DEBUG: Container not found - trying alternatives...');
-            const faqSection = document.querySelector('#faq');
-            console.log('FAQ DEBUG: faqSection found:', !!faqSection);
-            return;
-        }
-        if (!faqItems) return;
-        
-        console.log('FAQ DEBUG: Clearing existing content');
+        if (!faqContainer || !faqItems) return;
+
         // Clear existing content
         faqContainer.innerHTML = '';
 
         // Add new FAQ items
         faqItems.forEach((item, index) => {
-            console.log('FAQ DEBUG: Adding item', index, ':', item.question);
             const faqItem = document.createElement('div');
             faqItem.className = 'faq-item';
             faqItem.innerHTML = `
@@ -345,7 +400,6 @@ class CMSDataLoader {
             `;
             faqContainer.appendChild(faqItem);
         });
-        console.log('FAQ DEBUG: FAQ section update complete');
     }
 
     // Update gallery section
