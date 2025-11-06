@@ -7,70 +7,73 @@ class CMSDataLoader {
         this.isLoaded = false;
     }
 
-    // Simple YAML parser for basic key-value pairs and nested arrays
+    // Robust YAML parser for agenda/events style structures
     parseYAML(yamlText) {
-        const lines = yamlText.split('\n');
-        const stack = [{}];  // Stack for nested structures
-        let currentIndent = 0;
-        
-        for (let i = 0; i < lines.length; i++) {
-            const line = lines[i];
-            if (!line.trim() || line.trim().startsWith('#')) continue;
-            
-            const indent = line.match(/^(\s*)/)[1].length;
-            const content = line.trim();
-            
-            // Adjust stack based on indentation
-            while (stack.length - 1 > Math.floor(indent / 2)) {
-                stack.pop();
-            }
+        const lines = yamlText.split('\n').filter(line => line.trim() && !line.trim().startsWith('#'));
+        const result = {};
+        let currentSection = null;
+        let currentArray = null;
+        let currentObject = null;
+        let indentLevel = 0;
+
+        for (let line of lines) {
+            const trimmed = line.trim();
+            const match = line.match(/^(\s*)(.*)$/);
+            const indent = match ? match[1].length : 0;
+            const content = match ? match[2].trim() : trimmed;
             
             // Array item (starts with dash)
             if (content.startsWith('-')) {
                 const itemContent = content.substring(1).trim();
-                const parent = stack[stack.length - 1];
                 
-                // Determine if this is a key-value pair or simple value
                 if (itemContent.includes(':')) {
-                    const [key, ...valueParts] = itemContent.split(':');
-                    const value = valueParts.join(':').trim();
-                    
-                    if (value === '') {
-                        // Nested object
-                        const newObj = {};
-                        parent[key] = newObj;
-                        stack.push(newObj);
-                    } else if (value === '|') {
-                        // Multi-line string (not implemented in this simple parser)
-                        parent[key] = '';
-                    } else {
-                        // Simple key-value pair
-                        parent[key] = this.parseValue(value);
+                    // Array item with properties (object)
+                    if (!currentArray) {
+                        currentArray = [];
+                        if (currentSection) {
+                            result[currentSection] = currentArray;
+                        }
                     }
+                    
+                    // Parse key-value pairs for this array item
+                    const itemData = {};
+                    const pairs = itemContent.split(':');
+                    const firstKey = pairs[0].trim();
+                    const firstValue = pairs.slice(1).join(':').trim();
+                    
+                    itemData[firstKey] = this.parseValue(firstValue);
+                    currentArray.push(itemData);
+                    currentObject = itemData;
                 } else {
-                    // Simple value in array
-                    stack[stack.length - 2] = stack[stack.length - 2] || [];
-                    stack[stack.length - 2].push(this.parseValue(itemContent));
+                    // Simple array item (string/number)
+                    if (!currentArray) {
+                        currentArray = [];
+                        if (currentSection) {
+                            result[currentSection] = currentArray;
+                        }
+                    }
+                    currentArray.push(this.parseValue(itemContent));
                 }
             }
             // Regular key-value pair
             else if (content.includes(':')) {
                 const [key, ...valueParts] = content.split(':');
+                const keyTrim = key.trim();
                 const value = valueParts.join(':').trim();
                 
                 if (value === '' || value === '|') {
-                    // Nested object or array
-                    const newObj = {};
-                    stack[stack.length - 1][key] = newObj;
-                    stack.push(newObj);
+                    // Start of nested structure
+                    currentSection = keyTrim;
+                    currentArray = null;
+                    currentObject = null;
                 } else {
                     // Simple key-value pair
-                    stack[stack.length - 1][key] = this.parseValue(value);
+                    result[keyTrim] = this.parseValue(value);
                 }
             }
         }
-        
-        return stack[0];
+
+        return result;
     }
     
     // Parse simple values (remove quotes, convert booleans/numbers)
@@ -179,8 +182,13 @@ class CMSDataLoader {
         if (data.agenda) {
             const agendaData = data.agenda.events || data.agenda; // New format (wrapped) or old format (direct array)
             console.log('Agenda data loaded:', agendaData);
+            console.log('Agenda events object:', data.agenda.events);
+            console.log('Is agendaData array:', Array.isArray(agendaData));
+            console.log('Agenda events array length:', data.agenda.events ? data.agenda.events.length : 'N/A');
             if (Array.isArray(agendaData)) {
                 this.updateAgendaSection(agendaData);
+            } else {
+                console.warn('Agenda data is not an array, skipping update');
             }
         }
 
@@ -188,8 +196,13 @@ class CMSDataLoader {
         if (data.faq) {
             const faqData = data.faq.items || data.faq; // New format (wrapped) or old format (direct array)
             console.log('FAQ data loaded:', faqData);
+            console.log('FAQ items object:', data.faq.items);
+            console.log('Is faqData array:', Array.isArray(faqData));
+            console.log('FAQ items array length:', data.faq.items ? data.faq.items.length : 'N/A');
             if (Array.isArray(faqData)) {
                 this.updateFAQSection(faqData);
+            } else {
+                console.warn('FAQ data is not an array, skipping update');
             }
         }
 
@@ -197,8 +210,13 @@ class CMSDataLoader {
         if (data.gallery) {
             const galleryData = data.gallery.photos || data.gallery; // New format (wrapped) or old format (direct array)
             console.log('Gallery data loaded:', galleryData);
+            console.log('Gallery photos object:', data.gallery.photos);
+            console.log('Is galleryData array:', Array.isArray(galleryData));
+            console.log('Gallery photos array length:', data.gallery.photos ? data.gallery.photos.length : 'N/A');
             if (Array.isArray(galleryData)) {
                 this.updateGallerySection(galleryData);
+            } else {
+                console.warn('Gallery data is not an array, skipping update');
             }
         }
     }
