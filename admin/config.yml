@@ -10,7 +10,7 @@ site_url: https://hij-jeugdorkest.netlify.app
 display_url: https://hij-jeugdorkest.netlify.app
 logo_url: https://hij-jeugdorkest.netlify.app/imgs/hij-logo-header.png
 
-publish_mode: editorial_workflow
+# publish_mode: editorial_workflow  # Removed for direct publishing to fix timestamp issues
 
 media_folder: "imgs/uploads"
 public_folder: "/imgs/uploads"
