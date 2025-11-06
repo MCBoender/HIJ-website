@@ -19,13 +19,13 @@ event3_time: 11:00
 event3_location: Bibliotheek Rijswijk
 event3_description: Gratis toegang, reservering vereist
 event3_link: mailto:info@hijjeugdorkest.nl
-event4_day: ""
-event4_month: ""
-event4_title: ""
-event4_time: ""
-event4_location: ""
-event4_description: ""
-event4_link: ""
+event4_day: "13"
+event4_month: JAN
+event4_title: Concert at sea
+event4_time: 12:00
+event4_location: Scheveningen
+event4_description: Het orkest gaat de boot in...
+event4_link: www,scheveningen.net
 event5_day: ""
 event5_month: ""
 event5_title: ""
