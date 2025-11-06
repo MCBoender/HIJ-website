@@ -7,6 +7,26 @@ class CMSDataLoader {
         this.isLoaded = false;
     }
 
+    // Helper method to check if the next lines contain array items
+    isNextLinesArray(lines, startIndex, expectedIndent) {
+        for (let i = startIndex; i < Math.min(startIndex + 10, lines.length); i++) {
+            const line = lines[i].trim();
+            if (!line || line.startsWith('#')) continue;
+            
+            const match = lines[i].match(/^(\s*)(.*)$/);
+            const indent = match ? match[1].length : 0;
+            const content = match ? match[2].trim() : line;
+            
+            if (content.startsWith('-')) {
+                return true;
+            } else if (content.includes(':') && indent === expectedIndent) {
+                // It's a property, not an array item
+                return false;
+            }
+        }
+        return false;
+    }
+
     // Robust YAML parser for agenda/events style structures
     parseYAML(yamlText) {
         const lines = yamlText.split('\n');
@@ -50,14 +70,11 @@ class CMSDataLoader {
                     const firstKey = pairs[0].trim();
                     const firstValue = pairs.slice(1).join(':').trim();
                     
-                    console.log(`YAML DEBUG: Creating array item with property ${firstKey} = ${firstValue} in section '${parentContext.data}'`);
+                    console.log(`YAML DEBUG: Creating array item with property ${firstKey} = ${firstValue} in section '${parentContext.sectionName}'`);
                     itemData[firstKey] = this.parseValue(firstValue);
                     
-                    // Add to parent section's array
-                    if (!parentContext.data.array) {
-                        parentContext.data.array = [];
-                    }
-                    parentContext.data.array.push(itemData);
+                    // Store items directly in the section array
+                    parentContext.data.push(itemData);
                     
                     // Push new context for this array item
                     contextStack.push({
@@ -72,10 +89,8 @@ class CMSDataLoader {
                     // Get parent context
                     const parentContext = contextStack[contextStack.length - 1];
                     if (parentContext && parentContext.type === 'section') {
-                        if (!parentContext.data.array) {
-                            parentContext.data.array = [];
-                        }
-                        parentContext.data.array.push(this.parseValue(itemContent));
+                        // Store items directly in the section array
+                        parentContext.data.push(this.parseValue(itemContent));
                     }
                 }
             }
@@ -89,28 +104,50 @@ class CMSDataLoader {
                     // Start of nested structure (section)
                     console.log(`YAML DEBUG: Starting section '${keyTrim}'`);
                     
-                    // Start of nested structure (section)
-                    console.log(`YAML DEBUG: Starting section '${keyTrim}'`);
+                    // Look ahead to see if this section contains array items
+                    const isArraySection = this.isNextLinesArray(lines, currentLine + 1, indent + 2);
                     
-                    // Get parent context for this section
-                    const parentContext = contextStack[contextStack.length - 1];
-                    
-                    if (parentContext) {
-                        // Nested section within another section
-                        parentContext.data[keyTrim] = {};
-                        contextStack.push({
-                            type: 'section',
-                            data: parentContext.data[keyTrim],
-                            indent: indent
-                        });
+                    if (isArraySection) {
+                        // This section will contain an array
+                        console.log(`YAML DEBUG: Section '${keyTrim}' detected as array section`);
+                        const parentContext = contextStack[contextStack.length - 1];
+                        if (parentContext) {
+                            parentContext.data[keyTrim] = [];
+                            contextStack.push({
+                                type: 'section',
+                                data: parentContext.data[keyTrim],
+                                indent: indent,
+                                sectionName: keyTrim
+                            });
+                        } else {
+                            result[keyTrim] = [];
+                            contextStack.push({
+                                type: 'section',
+                                data: result[keyTrim],
+                                indent: indent,
+                                sectionName: keyTrim
+                            });
+                        }
                     } else {
-                        // Root level section
-                        result[keyTrim] = {};
-                        contextStack.push({
-                            type: 'section',
-                            data: result[keyTrim],
-                            indent: indent
-                        });
+                        // This section will contain object properties
+                        const parentContext = contextStack[contextStack.length - 1];
+                        if (parentContext) {
+                            parentContext.data[keyTrim] = {};
+                            contextStack.push({
+                                type: 'section',
+                                data: parentContext.data[keyTrim],
+                                indent: indent,
+                                sectionName: keyTrim
+                            });
+                        } else {
+                            result[keyTrim] = {};
+                            contextStack.push({
+                                type: 'section',
+                                data: result[keyTrim],
+                                indent: indent,
+                                sectionName: keyTrim
+                            });
+                        }
                     }
                 } else {
                     // Simple key-value pair
@@ -120,7 +157,7 @@ class CMSDataLoader {
                         console.log(`YAML DEBUG: Setting ${keyTrim} = ${value} in current array item`);
                         currentContext.data[keyTrim] = this.parseValue(value);
                     } else if (currentContext && currentContext.type === 'section') {
-                        console.log(`YAML DEBUG: Setting ${keyTrim} = ${value} in section '${Object.keys(currentContext.data)[0] || 'unknown'}'`);
+                        console.log(`YAML DEBUG: Setting ${keyTrim} = ${value} in section '${currentContext.sectionName || 'unknown'}'`);
                         currentContext.data[keyTrim] = this.parseValue(value);
                     } else {
                         console.log(`YAML DEBUG: Setting ${keyTrim} = ${value} in root`);
