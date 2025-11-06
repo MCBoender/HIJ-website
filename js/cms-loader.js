@@ -7,98 +7,46 @@ class CMSDataLoader {
         this.isLoaded = false;
     }
 
-    // Flexible YAML parser for all values including folded text
+    // Simple YAML parser for basic key-value pairs and arrays
     parseYAML(yamlText) {
+        const lines = yamlText.split('\n').filter(line => line.trim() && !line.startsWith('#'));
         const result = {};
-        const lines = yamlText.split('\n');
-        
-        for (let i = 0; i < lines.length; i++) {
-            const line = lines[i];
-            
-            // Skip empty lines and comments
-            if (!line.trim() || line.trim().startsWith('#')) {
+        let currentArray = null;
+        let currentObject = null;
+        let indentLevel = 0;
+
+        for (let line of lines) {
+            const trimmed = line.trim();
+            if (!trimmed || trimmed.startsWith('#')) continue;
+
+            // Remove dashes for array items
+            if (trimmed.startsWith('- ')) {
+                if (!currentArray) currentArray = [];
+                const value = trimmed.substring(2);
+                if (value.includes(': ')) {
+                    const [key, ...valParts] = value.split(': ');
+                    currentArray.push({ [key]: valParts.join(': ') });
+                } else {
+                    currentArray.push(value);
+                }
                 continue;
             }
-            
-            // Look for key-value patterns
-            if (line.includes(':')) {
-                const colonIndex = line.indexOf(':');
-                const key = line.substring(0, colonIndex).trim();
-                let value = line.substring(colonIndex + 1).trim();
+
+            // Regular key-value pairs
+            if (trimmed.includes(': ')) {
+                const [key, ...valueParts] = trimmed.split(': ');
+                const value = valueParts.join(': ').trim();
                 
-                // Check if this is a multi-line value
-                if (value === '' || value === '>' || value === '|') {
-                    // Classic multi-line: collect indented lines
-                    const multiLines = [];
-                    let j = i + 1;
-                    
-                    while (j < lines.length) {
-                        const nextLine = lines[j];
-                        const trimmedNext = nextLine.trim();
-                        
-                        // Stop if we find a new top-level key
-                        if (trimmedNext && trimmedNext.includes(':') && !trimmedNext.startsWith('-') && !nextLine.match(/^\s/) && !nextLine.startsWith('-')) {
-                            break;
-                        }
-                        
-                        // Skip empty lines
-                        if (!trimmedNext) {
-                            j++;
-                            continue;
-                        }
-                        
-                        // Add content
-                        if (trimmedNext) {
-                            multiLines.push(trimmedNext);
-                        }
-                        
-                        j++;
-                    }
-                    
-                    result[key] = multiLines.join(' ');
-                    i = j - 1;
+                if (value === '' || value === '|') {
+                    // Multi-line text starts next
+                    currentObject = {};
+                    result[key] = currentObject;
                 } else {
-                    // Check if this might be folded text (continuation lines)
-                    const nextLine = i + 1 < lines.length ? lines[i + 1] : '';
-                    
-                    if (nextLine && nextLine.match(/^\s/) && nextLine.trim() && !nextLine.trim().startsWith('#')) {
-                        // This looks like folded text - first line + continuation
-                        const multiLines = [value];
-                        let j = i + 1;
-                        
-                        while (j < lines.length) {
-                            const continuationLine = lines[j];
-                            const trimmed = continuationLine.trim();
-                            
-                            // Stop if we hit a new top-level key
-                            if (trimmed && trimmed.includes(':') && !trimmed.startsWith('-') && !continuationLine.match(/^\s/) && !continuationLine.startsWith('-')) {
-                                break;
-                            }
-                            
-                            // Stop at empty lines
-                            if (!trimmed) {
-                                j++;
-                                continue;
-                            }
-                            
-                            // Add continuation line (just the content)
-                            if (trimmed) {
-                                multiLines.push(trimmed);
-                            }
-                            
-                            j++;
-                        }
-                        
-                        result[key] = multiLines.join(' ');
-                        i = j - 1;
-                    } else {
-                        // Simple single-line value
-                        result[key] = value.replace(/^"|"$/g, '');
-                    }
+                    result[key] = value;
                 }
             }
         }
-        
+
         return result;
     }
 
@@ -110,36 +58,25 @@ class CMSDataLoader {
             // Load content data
             const contentResponse = await fetch('./_data/content.yml');
             const contentText = await contentResponse.text();
-            console.log('Raw YAML text:', contentText.substring(0, 200) + '...');
             this.data.content = this.parseYAML(contentText);
             console.log('Content loaded:', this.data.content);
-            console.log('Homepage title:', this.data.content.homepage_title);
-            console.log('Homepage subtitle:', this.data.content.homepage_subtitle);
-            console.log('About text:', this.data.content.about_text);
-            console.log('Subtitle length:', this.data.content.homepage_subtitle ? this.data.content.homepage_subtitle.length : 'undefined');
 
             // Load agenda data
             const agendaResponse = await fetch('./_data/agenda.yml');
             const agendaText = await agendaResponse.text();
-            const agendaData = this.parseYAML(agendaText);
-            // Handle both old format (direct array) and new format (wrapped in events)
-            this.data.agenda = agendaData.events || agendaData;
+            this.data.agenda = this.parseYAML(agendaText);
             console.log('Agenda loaded:', this.data.agenda);
 
             // Load FAQ data
             const faqResponse = await fetch('./_data/faq.yml');
             const faqText = await faqResponse.text();
-            const faqData = this.parseYAML(faqText);
-            // Handle both old format (direct array) and new format (wrapped in items)
-            this.data.faq = faqData.items || faqData;
+            this.data.faq = this.parseYAML(faqText);
             console.log('FAQ loaded:', this.data.faq);
 
             // Load gallery data
             const galleryResponse = await fetch('./_data/gallery.yml');
             const galleryText = await galleryResponse.text();
-            const galleryData = this.parseYAML(galleryText);
-            // Handle both old format (direct array) and new format (wrapped in photos)
-            this.data.gallery = galleryData.photos || galleryData;
+            this.data.gallery = this.parseYAML(galleryText);
             console.log('Gallery loaded:', this.data.gallery);
 
             this.isLoaded = true;
@@ -158,34 +95,19 @@ class CMSDataLoader {
 
     // Update page content with loaded data
     updatePageContent() {
-        console.log('updatePageContent called');
-        console.log('isLoaded:', this.isLoaded);
-        
-        if (!this.isLoaded) {
-            console.log('Not loaded, skipping update');
-            return;
-        }
+        if (!this.isLoaded) return;
 
         const data = this.data;
-        console.log('Data for update:', data.content);
 
         // Update homepage content
         if (data.content.homepage_title) {
             const titleElement = document.querySelector('.hero-title');
-            console.log('Title element found:', titleElement);
-            if (titleElement) {
-                console.log('Updating title to:', data.content.homepage_title);
-                titleElement.textContent = data.content.homepage_title;
-            }
+            if (titleElement) titleElement.textContent = data.content.homepage_title;
         }
 
         if (data.content.homepage_subtitle) {
             const subtitleElement = document.querySelector('.hero-subtitle');
-            console.log('Subtitle element found:', subtitleElement);
-            if (subtitleElement) {
-                console.log('Updating subtitle to:', data.content.homepage_subtitle);
-                subtitleElement.textContent = data.content.homepage_subtitle;
-            }
+            if (subtitleElement) subtitleElement.textContent = data.content.homepage_subtitle;
         }
 
         // Update about section
@@ -207,19 +129,31 @@ class CMSDataLoader {
             }
         }
 
-        // Update agenda section
-        if (data.agenda && Array.isArray(data.agenda)) {
-            this.updateAgendaSection(data.agenda);
+        // Update agenda section with backwards compatibility
+        if (data.agenda) {
+            const agendaData = data.agenda.events || data.agenda; // New format (wrapped) or old format (direct array)
+            console.log('Agenda data loaded:', agendaData);
+            if (Array.isArray(agendaData)) {
+                this.updateAgendaSection(agendaData);
+            }
         }
 
-        // Update FAQ section
-        if (data.faq && Array.isArray(data.faq)) {
-            this.updateFAQSection(data.faq);
+        // Update FAQ section with backwards compatibility
+        if (data.faq) {
+            const faqData = data.faq.items || data.faq; // New format (wrapped) or old format (direct array)
+            console.log('FAQ data loaded:', faqData);
+            if (Array.isArray(faqData)) {
+                this.updateFAQSection(faqData);
+            }
         }
 
-        // Update gallery section
-        if (data.gallery && Array.isArray(data.gallery)) {
-            this.updateGallerySection(data.gallery);
+        // Update gallery section with backwards compatibility
+        if (data.gallery) {
+            const galleryData = data.gallery.photos || data.gallery; // New format (wrapped) or old format (direct array)
+            console.log('Gallery data loaded:', galleryData);
+            if (Array.isArray(galleryData)) {
+                this.updateGallerySection(galleryData);
+            }
         }
     }
 
