@@ -1,5 +1,7 @@
 <!DOCTYPE html>
+
 <html lang="nl">
+    <!-- dit is de evrsie waar minimax mee moet werken -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,9 +25,9 @@
                 <a href="#over-ons" class="nav-link">Over Ons</a>
                 <a href="#repetities" class="nav-link">Repetities</a>
                 <a href="#agenda" class="nav-link">Agenda</a>
+                <a href="#lid-worden" class="nav-link cta-nav">Lid Worden</a>
                 <a href="#galerij" class="nav-link">Galerij</a>
                 <a href="#contact" class="nav-link">Contact</a>
-                <a href="#lid-worden" class="nav-link cta-nav">Lid Worden</a>
             </div>
             <div class="hamburger" id="hamburger">
                 <span></span>
@@ -117,7 +119,7 @@
             <div class="about-story">
                 <h3>Ons Verhaal</h3>
                 <p>Het H.I.J. is ontstaan uit de liefde voor muziek en de wens om jongeren samen te brengen door muziek. We geloven dat muziek maken niet alleen over techniek gaat, maar vooral over plezier maken, vrienden maken en samen iets moois creëren.</p>
-                <p>Of je nu violist bent, drummer, of nog nooit een instrument hebt bespeeld - bij ons is iedereen welkom! We hebben momenteel violen, cello's, contrabas, trompet en keyboard, maar we zijn altijd op zoek naar meer brass instrumenten, percussie en extra contrabassisten.</p>
+                <p>Of je nu violist bent, drummer, of als je pas een paar jaar speelt - bij ons is iedereen welkom! We hebben momenteel koper(blazers), hout(blazers), violen (ook altviool) en cello's, maar we zijn altijd op zoek naar meer brass instrumenten, percussie en extra contrabassisten.</p>
             </div>
         </div>
     </section>
@@ -233,45 +235,6 @@
         </div>
     </section>
 
-    <!-- Galerij Section -->
-    <section id="galerij" class="section section-dark">
-        <div class="container">
-            <h2 class="section-title">Galerij</h2>
-            <p class="section-subtitle">Een kijkje in ons muzikale avontuur</p>
-            
-            <div class="gallery-grid">
-                <div class="gallery-item">
-                    <img src="imgs/franse-kerk-concert.jpg" alt="Optreden in de Franse Kerk">
-                    <div class="gallery-overlay">
-                        <h4>Optreden in de Franse Kerk</h4>
-                        <p>Prachtige acoustiek in een historische setting</p>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="imgs/library-concert.jpg" alt="Muzikaal verhaal in de bibliotheek">
-                    <div class="gallery-overlay">
-                        <h4>Muzikaal verhaal in de bibliotheek</h4>
-                        <p>Jongeren en kinderen genieten van onze optredens</p>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="imgs/park-concert.jpg" alt="Optreden in het park paviljoen">
-                    <div class="gallery-overlay">
-                        <h4>Optreden in het park paviljoen</h4>
-                        <p>Buitenoptredens brengen muziek naar iedereen</p>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="imgs/floating-ponton-concert.jpg" alt="Optreden op floating ponton">
-                    <div class="gallery-overlay">
-                        <h4>Uniek optreden op het water</h4>
-                        <p>Onze meest bijzondere locatie tot nu toe!</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Lid Worden Section -->
     <section id="lid-worden" class="section">
         <div class="container">
@@ -319,20 +282,63 @@
                     <div class="instruments-grid">
                         <div class="instrument-needed">
                             <span class="instrument-icon">🎺</span>
-                            <span>Meer brass instrumenten</span>
-                        </div>
-                        <div class="instrument-needed">
-                            <span class="instrument-icon">🎸</span>
-                            <span>Extra contrabass</span>
-                        </div>
-                        <div class="instrument-needed">
-                            <span class="instrument-icon">🥁</span>
-                            <span>Percussie</span>
+                            <span>Meer koperblazers</span>
                         </div>
                         <div class="instrument-needed">
                             <span class="instrument-icon">🎵</span>
+                            <span>Houtblazers</span>
+                        </div>
+                        <div class="instrument-needed">
+                            <span class="instrument-icon">🎼</span>
+                            <span>Extra violen en altviolen</span>
+                        </div>
+                        <div class="instrument-needed">
+                            <span class="instrument-icon">🎻</span>
+                            <span>Meer cello's</span>
+                        </div>
+                        <div class="instrument-needed">
+                            <span class="instrument-icon">🎶</span>
                             <span>En alle andere instrumenten!</span>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Galerij Section -->
+    <section id="galerij" class="section section-dark">
+        <div class="container">
+            <h2 class="section-title">Galerij</h2>
+            <p class="section-subtitle">Een kijkje in ons muzikale avontuur</p>
+            
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="imgs/franse-kerk-concert.jpg" alt="Optreden in de Franse Kerk">
+                    <div class="gallery-overlay">
+                        <h4>Optreden in de Franse Kerk</h4>
+                        <p>Prachtige acoustiek in een historische setting</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="imgs/library-concert.jpg" alt="Muzikaal verhaal in de bibliotheek">
+                    <div class="gallery-overlay">
+                        <h4>Muzikaal verhaal in de bibliotheek</h4>
+                        <p>Jongeren en kinderen genieten van onze optredens</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="imgs/park-concert.jpg" alt="Optreden in het park paviljoen">
+                    <div class="gallery-overlay">
+                        <h4>Optreden in het park paviljoen</h4>
+                        <p>Buitenoptredens brengen muziek naar iedereen</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="imgs/floating-ponton-concert.jpg" alt="Optreden op floating ponton">
+                    <div class="gallery-overlay">
+                        <h4>Uniek optreden op het water</h4>
+                        <p>Onze meest bijzondere locatie tot nu toe!</p>
                     </div>
                 </div>
             </div>
@@ -476,10 +482,10 @@
                     <a href="#over-ons">Over Ons</a>
                     <a href="#repetities">Repetities</a>
                     <a href="#agenda">Agenda</a>
+                    <a href="#lid-worden">Lid Worden</a>
                     <a href="#galerij">Galerij</a>
                     <a href="#sponsoring">Steun Ons</a>
                     <a href="#faq">Veelgestelde Vragen</a>
-                    <a href="#lid-worden">Lid Worden</a>
                     <a href="#contact">Contact</a>
                 </div>
                 <div class="footer-social">
