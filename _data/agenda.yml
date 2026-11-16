@@ -1,6 +1,6 @@
 event1_year: "2025"
-event1_day: "20"
-event1_month: SEP
+event1_day: "30"
+event1_month: JAN
 event1_title: Optreden in de Franse Kerk in Voorburg
 event1_time: 10:00 - 10:45
 event1_location: Franse Kerkstraat 24, Voorburg
@@ -54,17 +54,16 @@ event6_description: Kom jij ook luisteren naar het muzikale verhaal 'Een tijger
   bibliotheek in Leidschendam! Helemaal gratis, meld je wel even aan via de link
   bij Meer info.
 event6_link: https://bibliotheekaandevliet.op-shop.nl/2951/het-haags-instrumentaal-jeugdensemble-een-tijger-in-de-trein/19-09-2026
-event7_year: "2026"
-event7_day: "10"
-event7_month: OKT
+event7_year: "2027"
+event7_day: "30"
+event7_month: JAN
 event7_title: Prinses Arabella maakt muziek (kinderboekenweek concert)
-event7_time: 11:15
-event7_location: Bibliotheek Leidschenveen, Emmy Belinfantedreef 7, 2492 JM Den Haag
+event7_time: 11:00
+event7_location: Bibliotheek Rijswijk, Generaal Spoorlaan 2, 2283 GM Rijswijk
 event7_description: Kom je ook kijken bij het H.I.J. Jeugdorkest als ze het
   prachtige verhaal spelen van prinses Arabella die zo graag muziek wil maken?
-  Meld je dan wel even aan, de entree is gratis! Meld je wel even aan via de
-  link bij Meer info.
-event7_link: https://www.bibliotheekdenhaag.nl/activiteiten/activiteiten/leidschenveen/spot-aan--voor-prinses-arabella-en-het-haags-instrumentaal-jeugd.html
+  De entree is gratis, de link om aan te melden volgt nog.
+event7_link: ""
 event8_year: "2026"
 event8_day: "31"
 event8_month: OKT
